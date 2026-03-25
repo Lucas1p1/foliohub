@@ -1,12 +1,17 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
+  return _resend;
+}
+
 const FROM = process.env.RESEND_FROM_EMAIL ?? "hello@foliohub.co";
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://foliohub.co";
 
 export async function sendWelcomeEmail(email: string, username: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `Your ${APP_NAME} page is ready 🎉`,
@@ -44,7 +49,7 @@ export async function sendWelcomeEmail(email: string, username: string) {
 }
 
 export async function sendProUpgradeEmail(email: string, username: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to: email,
     subject: `You're now on ${APP_NAME} Pro ⚡`,
