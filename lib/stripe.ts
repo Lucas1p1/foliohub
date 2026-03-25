@@ -15,10 +15,31 @@ export function getStripe(): Stripe {
 
 // Keep named export for convenience
 export const stripe = {
-  customers: { create: (...a: Parameters<Stripe["customers"]["create"]>) => getStripe().customers.create(...a) },
-  checkout: { sessions: { create: (...a: Parameters<Stripe["checkout"]["sessions"]["create"]>) => getStripe().checkout.sessions.create(...a) } },
-  billingPortal: { sessions: { create: (...a: Parameters<Stripe["billingPortal"]["sessions"]["create"]>) => getStripe().billingPortal.sessions.create(...a) } },
-  webhooks: { constructEvent: (...a: Parameters<Stripe["webhooks"]["constructEvent"]>) => getStripe().webhooks.constructEvent(...a) },
+  customers: {
+    create: (params: Stripe.CustomerCreateParams, options?: Stripe.RequestOptions) =>
+      getStripe().customers.create(params, options),
+  },
+  checkout: {
+    sessions: {
+      create: (params: Stripe.Checkout.SessionCreateParams, options?: Stripe.RequestOptions) =>
+        getStripe().checkout.sessions.create(params, options),
+    },
+  },
+  billingPortal: {
+    sessions: {
+      create: (params: Stripe.BillingPortal.SessionCreateParams, options?: Stripe.RequestOptions) =>
+        getStripe().billingPortal.sessions.create(params, options),
+    },
+  },
+  webhooks: {
+    constructEvent: (
+      payload: string | Buffer,
+      header: string | Buffer | string[],
+      secret: string,
+      tolerance?: number,
+      cryptoProvider?: Stripe.CryptoProvider
+    ) => getStripe().webhooks.constructEvent(payload, header, secret, tolerance, cryptoProvider),
+  },
 };
 
 export async function createStripeCustomer(email: string, userId: string) {
