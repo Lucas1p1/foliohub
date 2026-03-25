@@ -1,0 +1,57 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { sendWelcomeEmail } from "@/lib/emails";
+
+export async function signUp(formData: FormData) {
+  const supabase = await createClient();
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
+
+  if (error) return { error: error.message };
+
+  // Send welcome email after profile trigger creates the username
+  if (data.user) {
+    try {
+      // Small delay to allow DB trigger to fire
+      await new Promise((r) => setTimeout(r, 500));
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profile?.username) {
+        await sendWelcomeEmail(email, profile.username);
+      }
+    } catch {
+      // Non-fatal — don't block signup
+    }
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function signIn(formData: FormData) {
+  const supabase = await createClient();
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
+}
