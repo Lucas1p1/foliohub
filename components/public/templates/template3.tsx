@@ -9,6 +9,7 @@ import type { PublicProfileData } from "@/types";
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
 
 export function Template3({ data: { profile, projects, services } }: { data: PublicProfileData }) {
+  if (!profile) return null;
   const { track } = useTrack(profile.id);
   const social = profile.social_links as Record<string, string>;
 
