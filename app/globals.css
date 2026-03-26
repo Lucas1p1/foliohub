@@ -1,70 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    --primary: 0 0% 7%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 7%;
-    --accent: 0 0% 94%;
-    --accent-foreground: 0 0% 7%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 7%;
-    --radius: 0.625rem;
+    /* Core palette */
+    --ink: #0a0a0a;
+    --ink-1: #111111;
+    --ink-2: #1c1c1c;
+    --ink-3: #2a2a2a;
+    --ink-4: #3a3a3a;
+    --dust: #888888;
+    --fog:  #bbbbbb;
+    --ash:  #e8e8e8;
+    --paper: #f5f5f5;
+    --white: #ffffff;
+    --acid: #e8ff47;
+    --acid-dim: #c8df27;
+
+    /* Mapped tokens */
+    --background: 0 0% 4%;          /* #0a0a0a */
+    --foreground: 0 0% 91%;         /* #e8e8e8 */
+    --card: 0 0% 7%;                /* #111111 */
+    --card-foreground: 0 0% 91%;
+    --muted: 0 0% 11%;              /* #1c1c1c */
+    --muted-foreground: 0 0% 53%;   /* #888888 */
+    --primary: 68 100% 64%;         /* acid #e8ff47 */
+    --primary-foreground: 0 0% 4%;  /* ink on acid */
+    --secondary: 0 0% 11%;
+    --secondary-foreground: 0 0% 91%;
+    --accent: 0 0% 16%;             /* #2a2a2a */
+    --accent-foreground: 0 0% 91%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 91%;
+    --border: 0 0% 11%;             /* #1c1c1c */
+    --input: 0 0% 11%;
+    --ring: 68 100% 64%;
+    --radius: 0.5rem;
   }
 
-  .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 96%;
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 96%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
-    --primary: 0 0% 96%;
-    --primary-foreground: 0 0% 7%;
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 96%;
-    --accent: 0 0% 18%;
-    --accent-foreground: 0 0% 96%;
-    --destructive: 0 63% 45%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 0 0% 80%;
-  }
+  * { @apply border-border; box-sizing: border-box; }
 
-  * {
-    @apply border-border;
-  }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    background: var(--ink);
+    color: var(--ash);
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.6;
   }
 
-  h1, h2, h3, h4 {
-    @apply tracking-tight;
+  h1, h2, h3, h4, h5 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--white);
   }
+
+  ::selection {
+    background: var(--acid);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--acid);
+    outline-offset: 2px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--dust); }
 }
 
 @layer utilities {
+  /* Fade in */
   .animate-fade-in {
-    animation: fade-in 0.4s ease-out forwards;
+    animation: fade-in 0.35s ease-out forwards;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(8px); }
+  /* Slide up */
+  .animate-slide-up {
+    animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Stagger children */
+  .stagger > * { animation: fade-in 0.35s ease-out both; }
+  .stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger > *:nth-child(2) { animation-delay: 60ms; }
+  .stagger > *:nth-child(3) { animation-delay: 120ms; }
+  .stagger > *:nth-child(4) { animation-delay: 180ms; }
+  .stagger > *:nth-child(5) { animation-delay: 240ms; }
+  .stagger > *:nth-child(6) { animation-delay: 300ms; }
+
+  /* Acid glow */
+  .glow-acid {
+    box-shadow: 0 0 0 1px rgba(232, 255, 71, 0.15), 0 0 20px rgba(232, 255, 71, 0.05);
+  }
+
+  /* Mono label */
+  .mono-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dust);
+  }
+
+  /* Serif display */
+  .serif {
+    font-family: 'Instrument Serif', Georgia, serif;
+  }
+
+  /* Thin border */
+  .border-thin {
+    border: 1px solid var(--ink-2);
+  }
+
+  /* Card hover */
+  .card-hover {
+    transition: border-color 150ms ease, background 150ms ease;
+  }
+  .card-hover:hover {
+    border-color: var(--ink-3);
+    background: var(--ink-1);
   }
 }

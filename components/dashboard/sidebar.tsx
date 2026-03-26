@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { cn, getInitials, getAvatarUrl } from "@/lib/utils";
 import { signOut } from "@/app/(auth)/actions";
-import { Badge } from "@/components/ui/card";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
@@ -22,112 +21,129 @@ interface SidebarProfile {
 }
 
 const navItems = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/dashboard/profile", label: "Profile", icon: User },
-  { href: "/dashboard/projects", label: "Projects", icon: Package },
-  { href: "/dashboard/services", label: "Services", icon: Briefcase },
-  { href: "/dashboard/pages", label: "Pages", icon: Globe, proOnly: true },
-  { href: "/dashboard/analytics", label: "Analytics", icon: BarChart2 },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard",            label: "Overview",   icon: LayoutDashboard },
+  { href: "/dashboard/profile",    label: "Profile",    icon: User },
+  { href: "/dashboard/projects",   label: "Projects",   icon: Package },
+  { href: "/dashboard/services",   label: "Services",   icon: Briefcase },
+  { href: "/dashboard/pages",      label: "Pages",      icon: Globe,    proOnly: true },
+  { href: "/dashboard/analytics",  label: "Analytics",  icon: BarChart2 },
+  { href: "/dashboard/settings",   label: "Settings",   icon: Settings },
 ];
 
 export function DashboardSidebar({ profile }: { profile: SidebarProfile | null }) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-60 shrink-0 border-r border-border bg-background flex flex-col min-h-screen sticky top-0">
+    <aside style={{
+      width: 220,
+      minHeight: "100vh",
+      background: "#0a0a0a",
+      borderRight: "1px solid #1c1c1c",
+      display: "flex",
+      flexDirection: "column",
+      position: "sticky",
+      top: 0,
+      fontFamily: "'DM Mono', monospace",
+      flexShrink: 0,
+    }}>
+
       {/* Logo */}
-      <div className="h-16 flex items-center px-5 border-b border-border">
-        <span className="font-semibold">{APP_NAME}</span>
+      <div style={{ height: 56, display: "flex", alignItems: "center", padding: "0 20px", borderBottom: "1px solid #1c1c1c" }}>
+        <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 18, color: "#fff", letterSpacing: "-0.02em" }}>
+          {APP_NAME}
+        </span>
       </div>
 
-      {/* Profile preview */}
+      {/* Profile strip */}
       {profile && (
-        <div className="px-4 py-4 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-muted overflow-hidden flex items-center justify-center text-sm font-medium shrink-0">
-              {profile.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={getAvatarUrl(profile.avatar_url) ?? ""} alt="" className="w-full h-full object-cover" />
-              ) : (
-                getInitials(profile.full_name ?? profile.username)
-              )}
+        <div style={{ padding: "16px 20px", borderBottom: "1px solid #1c1c1c" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* Avatar */}
+            <div style={{ width: 28, height: 28, borderRadius: 4, background: "#1c1c1c", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#888", flexShrink: 0 }}>
+              {profile.avatar_url
+                ? <img src={getAvatarUrl(profile.avatar_url) ?? ""} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                : getInitials(profile.full_name ?? profile.username)
+              }
             </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium truncate">{profile.full_name ?? profile.username}</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className={cn("w-1.5 h-1.5 rounded-full", profile.is_published ? "bg-green-500" : "bg-muted-foreground")} />
-                <span className="text-xs text-muted-foreground">
-                  {profile.is_published ? "Live" : "Draft"}
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 12, color: "#e8e8e8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {profile.full_name ?? profile.username}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: profile.is_published ? "#e8ff47" : "#3a3a3a", flexShrink: 0 }} />
+                <span style={{ fontSize: 10, color: "#555", letterSpacing: "0.04em" }}>
+                  {profile.is_published ? "LIVE" : "DRAFT"}
                 </span>
                 {profile.plan === "pro" && (
-                  <Badge variant="pro" className="text-[10px] px-1.5 py-0">Pro</Badge>
+                  <span style={{ fontSize: 9, background: "rgba(232,255,71,0.1)", color: "#e8ff47", padding: "1px 6px", borderRadius: 2, letterSpacing: "0.06em" }}>PRO</span>
                 )}
               </div>
             </div>
           </div>
-          <a
-            href={`${APP_URL}/${profile.username}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ExternalLink className="h-3 w-3" />
-            View my page
+
+          <a href={`${APP_URL}/${profile.username}`} target="_blank" rel="noopener noreferrer"
+            style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 12, fontSize: 10, color: "#3a3a3a", textDecoration: "none", letterSpacing: "0.04em", transition: "color 150ms" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#888")}
+            onMouseLeave={e => (e.currentTarget.style.color = "#3a3a3a")}>
+            <ExternalLink size={10} />
+            VIEW MY PAGE
           </a>
         </div>
       )}
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {navItems.map((item) => {
+      <nav style={{ flex: 1, padding: "12px 12px" }}>
+        {navItems.map(item => {
           const active = pathname === item.href;
           const isLocked = item.proOnly && profile?.plan !== "pro";
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors",
-                active
-                  ? "bg-accent text-foreground font-medium"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
-              )}
+            <Link key={item.href} href={item.href}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "9px 8px",
+                borderRadius: 4,
+                fontSize: 12,
+                color: active ? "#e8ff47" : "#555",
+                textDecoration: "none",
+                background: active ? "rgba(232,255,71,0.06)" : "transparent",
+                transition: "all 150ms",
+                marginBottom: 1,
+                letterSpacing: "0.02em",
+              }}
+              onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#e8e8e8"; }}
+              onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
             >
-              <item.icon className="h-4 w-4 shrink-0" />
+              <item.icon size={14} style={{ flexShrink: 0 }} />
               {item.label}
               {isLocked && (
-                <span className="ml-auto text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full font-semibold">Pro</span>
+                <span style={{ marginLeft: "auto", fontSize: 9, background: "rgba(232,255,71,0.1)", color: "#e8ff47", padding: "1px 5px", borderRadius: 2, letterSpacing: "0.06em" }}>PRO</span>
               )}
             </Link>
           );
         })}
       </nav>
 
-      {/* Upgrade CTA for free users */}
+      {/* Upgrade CTA (free users) */}
       {profile?.plan === "free" && (
-        <div className="mx-3 mb-3 p-3 rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800">
-          <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="h-3.5 w-3.5 text-amber-600" />
-            <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">Upgrade to Pro</span>
-          </div>
-          <p className="text-xs text-amber-600/80 dark:text-amber-500/80 mb-2">Analytics, all templates, multiple pages</p>
-          <Link
-            href="/dashboard/settings"
-            className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:underline"
-          >
-            Upgrade for $7/mo →
+        <div style={{ margin: "0 12px 12px", padding: "14px 14px", border: "1px solid #2a2a2a", borderRadius: 4, background: "#0d0d0d" }}>
+          <div style={{ fontSize: 10, color: "#e8ff47", letterSpacing: "0.08em", marginBottom: 6 }}>UPGRADE TO PRO</div>
+          <div style={{ fontSize: 11, color: "#555", lineHeight: 1.6, marginBottom: 12 }}>Analytics, all templates, multiple pages</div>
+          <Link href="/dashboard/settings"
+            style={{ display: "block", textAlign: "center", padding: "8px 0", background: "rgba(232,255,71,0.1)", color: "#e8ff47", textDecoration: "none", fontSize: 11, letterSpacing: "0.04em", borderRadius: 3, border: "1px solid rgba(232,255,71,0.15)", transition: "background 150ms" }}>
+            $7 / month →
           </Link>
         </div>
       )}
 
       {/* Sign out */}
-      <form action={signOut} className="px-3 pb-4">
-        <button
-          type="submit"
-          className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-        >
-          <LogOut className="h-4 w-4" />
+      <form action={signOut} style={{ padding: "0 12px 16px" }}>
+        <button type="submit"
+          style={{ display: "flex", width: "100%", alignItems: "center", gap: 10, padding: "9px 8px", background: "none", border: "none", borderRadius: 4, fontSize: 12, color: "#3a3a3a", cursor: "pointer", fontFamily: "'DM Mono', monospace", letterSpacing: "0.02em", transition: "color 150ms" }}
+          onMouseEnter={e => (e.currentTarget.style.color = "#888")}
+          onMouseLeave={e => (e.currentTarget.style.color = "#3a3a3a")}>
+          <LogOut size={14} />
           Sign out
         </button>
       </form>
