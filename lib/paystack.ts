@@ -57,6 +57,7 @@ export async function initializeSubscription(
 ): Promise<InitializeResult> {
   return paystackRequest<InitializeResult>("/transaction/initialize", "POST", {
     email,
+    amount: 50000, // Required by Paystack — plan amount overrides this anyway (500 NGN in kobo)
     plan: process.env.PAYSTACK_PLAN_CODE,
     callback_url: callbackUrl,
     metadata: {
@@ -86,6 +87,7 @@ export async function fetchSubscription(
     "GET"
   );
 }
+
 
 /** Verify a Paystack webhook signature */
 export function verifyWebhookSignature(
