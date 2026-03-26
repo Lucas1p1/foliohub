@@ -35,7 +35,7 @@ export default async function AnalyticsPage() {
             Upgrade to Pro to see your page views, WhatsApp clicks, and contact click trends.
           </p>
           <Button asChild>
-            <Link href="/dashboard/settings">Upgrade to Pro — $7/mo</Link>
+            <Link href="/dashboard/settings">Upgrade to Pro — ₦5000/mo</Link>
           </Button>
         </div>
       </div>

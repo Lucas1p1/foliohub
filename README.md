@@ -32,7 +32,7 @@ npm install
 
 1. Create a product in Stripe Dashboard: **Products → Add product**
    - Name: "FolioHub Pro"
-   - Price: $7/month, recurring
+   - Price: ₦5000/month, recurring
 2. Copy the **Price ID** (starts with `price_...`)
 3. Set up webhook endpoint: `https://yourdomain.com/api/stripe/webhook`
    - Events to listen for: `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`
@@ -125,7 +125,7 @@ supabase/
 - Template 1 (Developer layout)
 - FolioHub branding in footer
 
-### Pro plan ($7/month)
+### Pro plan (₦5000/month)
 - All 3 templates
 - Analytics dashboard (views, clicks, conversion rate)
 - No FolioHub branding

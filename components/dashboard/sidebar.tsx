@@ -35,57 +35,63 @@ export function DashboardSidebar({ profile }: { profile: SidebarProfile | null }
 
   return (
     <aside style={{
-      width: 220,
+      width: 230,
       minHeight: "100vh",
-      background: "#0a0a0a",
-      borderRight: "1px solid #1c1c1c",
+      background: "#050505",
+      borderRight: "1px solid rgba(255,255,255,0.05)",
       display: "flex",
       flexDirection: "column",
       position: "sticky",
       top: 0,
-      fontFamily: "'DM Mono', monospace",
+      fontFamily: "'DM Sans', -apple-system, sans-serif",
       flexShrink: 0,
     }}>
 
       {/* Logo */}
-      <div style={{ height: 56, display: "flex", alignItems: "center", padding: "0 20px", borderBottom: "1px solid #1c1c1c" }}>
-        <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 18, color: "#fff", letterSpacing: "-0.02em" }}>
+      <div style={{ height: 60, display: "flex", alignItems: "center", padding: "0 24px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 20, color: "#fff", letterSpacing: "-0.03em", fontStyle: "italic" }}>
           {APP_NAME}
         </span>
       </div>
 
       {/* Profile strip */}
       {profile && (
-        <div style={{ padding: "16px 20px", borderBottom: "1px solid #1c1c1c" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {/* Avatar */}
-            <div style={{ width: 28, height: 28, borderRadius: 4, background: "#1c1c1c", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#888", flexShrink: 0 }}>
+        <div style={{ padding: "18px 20px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 8,
+              background: "#1a1a1a",
+              border: "1px solid rgba(255,255,255,0.06)",
+              overflow: "hidden",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 11, color: "#555", flexShrink: 0, fontWeight: 400,
+            }}>
               {profile.avatar_url
                 ? <img src={getAvatarUrl(profile.avatar_url) ?? ""} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 : getInitials(profile.full_name ?? profile.username)
               }
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12, color: "#e8e8e8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <div style={{ fontSize: 13, color: "#e8e8e8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 400 }}>
                 {profile.full_name ?? profile.username}
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
-                <span style={{ width: 5, height: 5, borderRadius: "50%", background: profile.is_published ? "#e8ff47" : "#3a3a3a", flexShrink: 0 }} />
-                <span style={{ fontSize: 10, color: "#555", letterSpacing: "0.04em" }}>
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: profile.is_published ? "#4ade80" : "#2e2e2e", flexShrink: 0, boxShadow: profile.is_published ? "0 0 6px rgba(74,222,128,0.4)" : "none" }} />
+                <span style={{ fontSize: 10, color: "#3a3a3a", letterSpacing: "0.08em", fontFamily: "'Syne', sans-serif", fontWeight: 500 }}>
                   {profile.is_published ? "LIVE" : "DRAFT"}
                 </span>
                 {profile.plan === "pro" && (
-                  <span style={{ fontSize: 9, background: "rgba(232,255,71,0.1)", color: "#e8ff47", padding: "1px 6px", borderRadius: 2, letterSpacing: "0.06em" }}>PRO</span>
+                  <span style={{ fontSize: 9, background: "rgba(255,255,255,0.08)", color: "#aaa", padding: "1px 6px", borderRadius: 4, letterSpacing: "0.06em", fontFamily: "'Syne', sans-serif", fontWeight: 500 }}>PRO</span>
                 )}
               </div>
             </div>
           </div>
 
           <a href={`${APP_URL}/${profile.username}`} target="_blank" rel="noopener noreferrer"
-            style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 12, fontSize: 10, color: "#3a3a3a", textDecoration: "none", letterSpacing: "0.04em", transition: "color 150ms" }}
-            onMouseEnter={e => (e.currentTarget.style.color = "#888")}
-            onMouseLeave={e => (e.currentTarget.style.color = "#3a3a3a")}>
-            <ExternalLink size={10} />
+            style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 14, fontSize: 10, color: "#2a2a2a", textDecoration: "none", letterSpacing: "0.06em", transition: "color 150ms", fontFamily: "'Syne', sans-serif", fontWeight: 500 }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#666")}
+            onMouseLeave={e => (e.currentTarget.style.color = "#2a2a2a")}>
+            <ExternalLink size={9} />
             VIEW MY PAGE
           </a>
         </div>
@@ -102,47 +108,51 @@ export function DashboardSidebar({ profile }: { profile: SidebarProfile | null }
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                padding: "9px 8px",
-                borderRadius: 4,
-                fontSize: 12,
-                color: active ? "#e8ff47" : "#555",
+                padding: "9px 10px",
+                borderRadius: 7,
+                fontSize: 13,
+                color: active ? "#fff" : "#444",
                 textDecoration: "none",
-                background: active ? "rgba(232,255,71,0.06)" : "transparent",
+                background: active ? "rgba(255,255,255,0.07)" : "transparent",
                 transition: "all 150ms",
                 marginBottom: 1,
-                letterSpacing: "0.02em",
+                letterSpacing: "0.01em",
+                fontWeight: active ? 400 : 300,
+                border: active ? "1px solid rgba(255,255,255,0.07)" : "1px solid transparent",
               }}
-              onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#e8e8e8"; }}
-              onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#555"; }}
+              onMouseEnter={e => { if (!active) e.currentTarget.style.color = "#bbb"; }}
+              onMouseLeave={e => { if (!active) e.currentTarget.style.color = "#444"; }}
             >
-              <item.icon size={14} style={{ flexShrink: 0 }} />
+              <item.icon size={14} style={{ flexShrink: 0, opacity: active ? 1 : 0.6 }} />
               {item.label}
               {isLocked && (
-                <span style={{ marginLeft: "auto", fontSize: 9, background: "rgba(232,255,71,0.1)", color: "#e8ff47", padding: "1px 5px", borderRadius: 2, letterSpacing: "0.06em" }}>PRO</span>
+                <span style={{ marginLeft: "auto", fontSize: 9, background: "rgba(255,255,255,0.05)", color: "#555", padding: "1px 6px", borderRadius: 4, letterSpacing: "0.06em", fontFamily: "'Syne', sans-serif", fontWeight: 500 }}>PRO</span>
               )}
             </Link>
           );
         })}
       </nav>
 
-      {/* Upgrade CTA (free users) */}
+      {/* Upgrade CTA */}
       {profile?.plan === "free" && (
-        <div style={{ margin: "0 12px 12px", padding: "14px 14px", border: "1px solid #2a2a2a", borderRadius: 4, background: "#0d0d0d" }}>
-          <div style={{ fontSize: 10, color: "#e8ff47", letterSpacing: "0.08em", marginBottom: 6 }}>UPGRADE TO PRO</div>
-          <div style={{ fontSize: 11, color: "#555", lineHeight: 1.6, marginBottom: 12 }}>Analytics, all templates, multiple pages</div>
+        <div style={{ margin: "0 14px 14px", padding: "16px", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 9, background: "rgba(255,255,255,0.02)" }}>
+          <div style={{ fontSize: 10, color: "#888", letterSpacing: "0.1em", marginBottom: 6, fontFamily: "'Syne', sans-serif", fontWeight: 500 }}>UPGRADE TO PRO</div>
+          <div style={{ fontSize: 12, color: "#3a3a3a", lineHeight: 1.6, marginBottom: 14, fontWeight: 300 }}>Analytics, all templates, multiple pages</div>
           <Link href="/dashboard/settings"
-            style={{ display: "block", textAlign: "center", padding: "8px 0", background: "rgba(232,255,71,0.1)", color: "#e8ff47", textDecoration: "none", fontSize: 11, letterSpacing: "0.04em", borderRadius: 3, border: "1px solid rgba(232,255,71,0.15)", transition: "background 150ms" }}>
-            $7 / month →
+            style={{ display: "block", textAlign: "center", padding: "8px 0", background: "rgba(255,255,255,0.06)", color: "#aaa", textDecoration: "none", fontSize: 12, letterSpacing: "0.04em", borderRadius: 6, border: "1px solid rgba(255,255,255,0.08)", transition: "background 150ms, color 150ms" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.1)"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLElement).style.color = "#aaa"; }}>
+            ₦5000 / month →
           </Link>
         </div>
       )}
 
       {/* Sign out */}
-      <form action={signOut} style={{ padding: "0 12px 16px" }}>
+      <form action={signOut} style={{ padding: "0 12px 18px" }}>
         <button type="submit"
-          style={{ display: "flex", width: "100%", alignItems: "center", gap: 10, padding: "9px 8px", background: "none", border: "none", borderRadius: 4, fontSize: 12, color: "#3a3a3a", cursor: "pointer", fontFamily: "'DM Mono', monospace", letterSpacing: "0.02em", transition: "color 150ms" }}
-          onMouseEnter={e => (e.currentTarget.style.color = "#888")}
-          onMouseLeave={e => (e.currentTarget.style.color = "#3a3a3a")}>
+          style={{ display: "flex", width: "100%", alignItems: "center", gap: 10, padding: "9px 10px", background: "none", border: "none", borderRadius: 7, fontSize: 13, color: "#2e2e2e", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.01em", transition: "color 150ms", fontWeight: 300 }}
+          onMouseEnter={e => (e.currentTarget.style.color = "#666")}
+          onMouseLeave={e => (e.currentTarget.style.color = "#2e2e2e")}>
           <LogOut size={14} />
           Sign out
         </button>

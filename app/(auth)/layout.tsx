@@ -4,9 +4,27 @@ const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ minHeight: "100vh", background: "#0a0a0a", display: "flex", flexDirection: "column", fontFamily: "'DM Mono', monospace" }}>
-      <nav style={{ height: 56, display: "flex", alignItems: "center", padding: "0 32px", borderBottom: "1px solid #1c1c1c" }}>
-        <Link href="/" style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 20, color: "#fff", textDecoration: "none", letterSpacing: "-0.02em" }}>
+    <div style={{
+      minHeight: "100vh",
+      background: "#050505",
+      display: "flex",
+      flexDirection: "column",
+      fontFamily: "'DM Sans', -apple-system, sans-serif",
+    }}>
+      <nav style={{
+        height: 60,
+        display: "flex",
+        alignItems: "center",
+        padding: "0 40px",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}>
+        <Link href="/" style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: 22, color: "#fff",
+          textDecoration: "none",
+          letterSpacing: "-0.03em",
+          fontStyle: "italic",
+        }}>
           {APP_NAME}
         </Link>
       </nav>

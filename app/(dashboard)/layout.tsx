@@ -15,10 +15,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .single();
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", background: "#0a0a0a", fontFamily: "'DM Mono', monospace" }}>
+    <div style={{ minHeight: "100vh", display: "flex", background: "#050505", fontFamily: "'DM Sans', -apple-system, sans-serif" }}>
       <DashboardSidebar profile={profile} />
       <main style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", padding: "48px 32px" }}>
+        <div style={{ maxWidth: 740, margin: "0 auto", padding: "52px 40px" }}>
           {children}
         </div>
       </main>
