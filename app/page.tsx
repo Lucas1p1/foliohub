@@ -1,3 +1,6 @@
+"use client"
+
+
 import Link from "next/link";
 import { ArrowUpRight, BarChart2, Globe, MessageCircle, Layers, Zap } from "lucide-react";
 
