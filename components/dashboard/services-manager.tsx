@@ -11,7 +11,13 @@ import type { Service } from "@/types";
 
 const EMPTY = { title: "", description: "", price: "" };
 
-export function ServicesManager({ services: initial, userId }: { services: Service[]; userId: string }) {
+interface Props {
+  services: Service[];
+  userId: string;
+  pageId?: string; // if set, services belong to this page
+}
+
+export function ServicesManager({ services: initial, userId, pageId }: Props) {
   const { toast } = useToast();
   const [services, setServices] = useState(initial);
   const [form, setForm] = useState(EMPTY);
@@ -24,6 +30,7 @@ export function ServicesManager({ services: initial, userId }: { services: Servi
     setSaving(true);
     const { data, error } = await supabase.from("services").insert({
       profile_id: userId,
+      page_id: pageId ?? null,
       title: form.title,
       description: form.description || null,
       price: form.price || null,

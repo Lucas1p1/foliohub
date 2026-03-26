@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart2, ExternalLink, LayoutDashboard,
-  LogOut, Package, Settings, Sparkles, User, Briefcase,
+  LogOut, Package, Settings, Sparkles, User, Briefcase, Globe,
 } from "lucide-react";
 import { cn, getInitials, getAvatarUrl } from "@/lib/utils";
 import { signOut } from "@/app/(auth)/actions";
@@ -26,6 +26,7 @@ const navItems = [
   { href: "/dashboard/profile", label: "Profile", icon: User },
   { href: "/dashboard/projects", label: "Projects", icon: Package },
   { href: "/dashboard/services", label: "Services", icon: Briefcase },
+  { href: "/dashboard/pages", label: "Pages", icon: Globe, proOnly: true },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart2 },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
@@ -81,6 +82,7 @@ export function DashboardSidebar({ profile }: { profile: SidebarProfile | null }
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         {navItems.map((item) => {
           const active = pathname === item.href;
+          const isLocked = item.proOnly && profile?.plan !== "pro";
           return (
             <Link
               key={item.href}
@@ -94,6 +96,9 @@ export function DashboardSidebar({ profile }: { profile: SidebarProfile | null }
             >
               <item.icon className="h-4 w-4 shrink-0" />
               {item.label}
+              {isLocked && (
+                <span className="ml-auto text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full font-semibold">Pro</span>
+              )}
             </Link>
           );
         })}
@@ -106,7 +111,7 @@ export function DashboardSidebar({ profile }: { profile: SidebarProfile | null }
             <Sparkles className="h-3.5 w-3.5 text-amber-600" />
             <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">Upgrade to Pro</span>
           </div>
-          <p className="text-xs text-amber-600/80 dark:text-amber-500/80 mb-2">Analytics, all templates, no branding</p>
+          <p className="text-xs text-amber-600/80 dark:text-amber-500/80 mb-2">Analytics, all templates, multiple pages</p>
           <Link
             href="/dashboard/settings"
             className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:underline"

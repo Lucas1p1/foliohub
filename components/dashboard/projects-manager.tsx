@@ -10,11 +10,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getProjectImageUrl } from "@/lib/utils";
 import type { Project } from "@/types";
 
-const EMPTY: Omit<Project, "id" | "profile_id" | "created_at" | "updated_at"> = {
+const EMPTY: Omit<Project, "id" | "profile_id" | "page_id" | "created_at" | "updated_at"> = {
   title: "", description: "", image_url: null, live_url: "", github_url: "", order_index: 0,
 };
 
-export function ProjectsManager({ projects: initial, userId }: { projects: Project[]; userId: string }) {
+interface Props {
+  projects: Project[];
+  userId: string;
+  pageId?: string; // if set, projects belong to this page
+}
+
+export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
   const { toast } = useToast();
   const [projects, setProjects] = useState(initial);
   const [editing, setEditing] = useState<string | null>(null);
@@ -26,7 +32,9 @@ export function ProjectsManager({ projects: initial, userId }: { projects: Proje
 
   const supabase = createClient();
 
-  async function uploadImage(file: File, projectId?: string): Promise<string | null> {
+  const maxProjects = pageId ? 12 : 12;
+
+  async function uploadImage(file: File): Promise<string | null> {
     setUploading(true);
     const ext = file.name.split(".").pop();
     const path = `${userId}/${Date.now()}.${ext}`;
@@ -41,6 +49,7 @@ export function ProjectsManager({ projects: initial, userId }: { projects: Proje
     setSaving(true);
     const { data, error } = await supabase.from("projects").insert({
       profile_id: userId,
+      page_id: pageId ?? null,
       title: form.title,
       description: form.description || null,
       image_url: form.image_url,
@@ -73,7 +82,7 @@ export function ProjectsManager({ projects: initial, userId }: { projects: Proje
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      setProjects((p) => p.map((proj) => proj.id === id ? { ...proj, ...form, id, profile_id: userId, created_at: proj.created_at, updated_at: new Date().toISOString() } : proj));
+      setProjects((p) => p.map((proj) => proj.id === id ? { ...proj, ...form, id, profile_id: userId, page_id: pageId ?? null, created_at: proj.created_at, updated_at: new Date().toISOString() } : proj));
       setEditing(null);
       toast({ title: "Project updated ✓" });
     }
@@ -107,7 +116,6 @@ export function ProjectsManager({ projects: initial, userId }: { projects: Proje
         <Label>Description</Label>
         <Textarea value={form.description ?? ""} onChange={set("description")} placeholder="What you built and what tech you used..." rows={3} />
       </div>
-      {/* Image upload */}
       <div className="space-y-1.5">
         <Label>Project image</Label>
         <div className="flex items-center gap-3">
@@ -198,7 +206,6 @@ export function ProjectsManager({ projects: initial, userId }: { projects: Proje
         </Card>
       ))}
 
-      {/* Add project */}
       {showAdd ? (
         <Card className="ring-2 ring-ring">
           <CardContent className="p-4">
@@ -211,7 +218,7 @@ export function ProjectsManager({ projects: initial, userId }: { projects: Proje
           </CardContent>
         </Card>
       ) : (
-        projects.length < 12 && (
+        projects.length < maxProjects && (
           <Button
             variant="outline"
             className="w-full border-dashed h-12"
