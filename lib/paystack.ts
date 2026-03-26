@@ -55,16 +55,15 @@ export async function initializeSubscription(
   userId: string,
   callbackUrl: string
 ): Promise<InitializeResult> {
-  // in lib/paystack.ts — initializeSubscription
-return paystackRequest<InitializeResult>("/transaction/initialize", "POST", {
-  email,
-  plan: process.env.PAYSTACK_PLAN_CODE,
-  callback_url: callbackUrl,
-  metadata: {
-    user_id: userId,
-    cancel_action: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings`,
-  },
-});
+  return paystackRequest<InitializeResult>("/transaction/initialize", "POST", {
+    email,
+    plan: process.env.PAYSTACK_PLAN_CODE,
+    callback_url: callbackUrl,
+    metadata: {
+      user_id: userId,
+      cancel_action: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings`,
+    },
+  });
 }
 
 /** Disable (cancel) a subscription */

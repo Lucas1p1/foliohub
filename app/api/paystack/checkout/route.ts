@@ -50,6 +50,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: result.authorization_url });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("Paystack checkout error:", message, {
+      planCode: process.env.PAYSTACK_PLAN_CODE,
+      appUrl: process.env.NEXT_PUBLIC_APP_URL,
+    });
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

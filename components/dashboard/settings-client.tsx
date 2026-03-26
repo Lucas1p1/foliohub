@@ -160,7 +160,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
               <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-amber-500" />
-                  <span className="font-medium text-sm">Upgrade to Pro — $7/month</span>
+                  <span className="font-medium text-sm">Upgrade to Pro — 5000/month</span>
                 </div>
                 <ul className="space-y-1.5 text-sm text-muted-foreground">
                   {[
