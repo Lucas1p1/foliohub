@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+
 import { ArrowUpRight, BarChart2, Globe, MessageCircle, Layers, Zap } from "lucide-react";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
@@ -27,9 +29,12 @@ export default function LandingPage() {
         display: "flex", alignItems: "center",
       }}>
         <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 40px", width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, color: "#fff", letterSpacing: "-0.03em", fontStyle: "italic" }}>
-            {APP_NAME}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <Image src="/logo1.png" alt="" width={26} height={26} style={{ objectFit: "contain" }} />
+  <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, color: "#fff", letterSpacing: "-0.03em", fontStyle: "italic" }}>
+    {APP_NAME}
+  </span>
+</div>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <Link href="/login" className="fh-nav-link" style={{ padding: "8px 18px", fontSize: 13, color: "#666", textDecoration: "none", letterSpacing: "0.01em", fontWeight: 300, transition: "color 150ms", borderRadius: 6 }}>
               Sign in

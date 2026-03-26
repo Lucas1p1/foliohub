@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,11 +49,12 @@ export function DashboardSidebar({ profile }: { profile: SidebarProfile | null }
     }}>
 
       {/* Logo */}
-      <div style={{ height: 60, display: "flex", alignItems: "center", padding: "0 24px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 20, color: "#fff", letterSpacing: "-0.03em", fontStyle: "italic" }}>
-          {APP_NAME}
-        </span>
-      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <Image src="/logo1.png" alt="" width={22} height={22} style={{ objectFit: "contain" }} />
+  <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 20, color: "#fff", letterSpacing: "-0.03em", fontStyle: "italic" }}>
+    {APP_NAME}
+  </span>
+</div>
 
       {/* Profile strip */}
       {profile && (
