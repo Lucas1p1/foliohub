@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle, Loader2, ExternalLink, Sparkles } from "lucide-react";
+import { CheckCircle, Loader2, ExternalLink, Sparkles, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/lib/use-toast";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
   const [templateId, setTemplateId] = useState(profile.template_id);
   const [savingTemplate, setSavingTemplate] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -56,6 +57,14 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
       toast({ title: "Welcome to Pro! ⚡", description: "All Pro features are now unlocked." });
     }
   }, [justUpgraded, toast]);
+
+  // Check for error param in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("error") === "payment_failed") {
+      toast({ title: "Payment failed", description: "Your payment didn't go through. Please try again.", variant: "destructive" });
+    }
+  }, [toast]);
 
   async function saveTemplate(id: number) {
     if (profile.plan === "free" && id !== 1) {
@@ -69,20 +78,44 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
     toast({ title: "Template saved ✓" });
   }
 
-  async function handleBilling() {
+  async function handleUpgrade() {
     setBillingLoading(true);
-    const res = await fetch("/api/stripe/checkout", {
+    const res = await fetch("/api/paystack/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, email: userEmail, hasSubscription: !!profile.stripe_subscription_id }),
+      body: JSON.stringify({ userId, email: userEmail }),
     });
-    const { url, error } = await res.json();
+    const { url, error, alreadyPro } = await res.json();
+    if (alreadyPro) {
+      toast({ title: "You're already on Pro!", description: "Your subscription is active." });
+      setBillingLoading(false);
+      return;
+    }
     if (error) {
       toast({ title: "Error", description: error, variant: "destructive" });
       setBillingLoading(false);
       return;
     }
     window.location.href = url;
+  }
+
+  async function handleCancel() {
+    if (!confirm("Are you sure you want to cancel your Pro subscription? You'll be downgraded to the free plan immediately.")) return;
+    setCancelLoading(true);
+    const res = await fetch("/api/paystack/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, email: userEmail, action: "cancel" }),
+    });
+    const { cancelled, error } = await res.json();
+    if (error) {
+      toast({ title: "Error cancelling", description: error, variant: "destructive" });
+    } else if (cancelled) {
+      toast({ title: "Subscription cancelled", description: "You've been moved to the free plan." });
+      // Reload to reflect new plan
+      window.location.reload();
+    }
+    setCancelLoading(false);
   }
 
   return (
@@ -108,11 +141,19 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                 <CheckCircle className="h-4 w-4 text-green-500" />
                 All features unlocked — analytics, all templates, no branding
               </div>
-              <Button variant="outline" size="sm" onClick={handleBilling} disabled={billingLoading}>
-                {billingLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Manage billing
-                <ExternalLink className="h-3.5 w-3.5" />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCancel}
+                disabled={cancelLoading}
+                className="text-destructive border-destructive/30 hover:bg-destructive/10"
+              >
+                {cancelLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertCircle className="h-3.5 w-3.5" />}
+                Cancel subscription
               </Button>
+              <p className="text-xs text-muted-foreground">
+                To update your card or view payment history, contact Paystack support or your bank.
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -134,7 +175,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                     </li>
                   ))}
                 </ul>
-                <Button onClick={handleBilling} disabled={billingLoading} className="w-full sm:w-auto">
+                <Button onClick={handleUpgrade} disabled={billingLoading} className="w-full sm:w-auto">
                   {billingLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                   Upgrade to Pro
                 </Button>
@@ -166,9 +207,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                     locked && "opacity-60"
                   )}
                 >
-                  {/* Preview swatch */}
                   <div className={cn("h-20 rounded-lg mb-3 overflow-hidden relative", t.preview)}>
-                    {/* Mini layout preview */}
                     <div className="absolute inset-0 p-2 flex flex-col gap-1.5">
                       <div className="w-8 h-8 rounded-full bg-white/20" />
                       <div className="h-1.5 w-16 bg-white/30 rounded" />
