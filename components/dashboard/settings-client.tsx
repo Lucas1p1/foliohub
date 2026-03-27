@@ -120,7 +120,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
     await supabase.from("profiles").update({
       accent_color: accentColor,
       font_id: fontId,
-    } as unknown as Record<string, unknown>).eq("id", userId);
+    }).eq("id", userId);
     setSavingAppearance(false);
     toast({ title: "Appearance saved ✓" });
   }
