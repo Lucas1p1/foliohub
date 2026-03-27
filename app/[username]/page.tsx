@@ -5,10 +5,21 @@ import { Template1 } from "@/components/public/templates/template1";
 import { Template2 } from "@/components/public/templates/template2";
 import { Template3 } from "@/components/public/templates/template3";
 import type { PublicProfileData } from "@/types";
+
 export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ username: string }>;
 }
+
+type OwnerProfile = {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  plan: string;
+  accent_color: string | null;
+  font_id: string | null;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
@@ -42,7 +53,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .single();
 
   if (page) {
-    const ownerName = (page.profiles as unknown as { full_name: string | null } | null)?.full_name ?? username;
+    const ownerName =
+      (page.profiles as unknown as { full_name: string | null } | null)
+        ?.full_name ?? username;
     return {
       title: `${ownerName} — ${page.headline ?? ""}`,
       description: `View ${ownerName}'s professional profile on ${APP_NAME}`,
@@ -65,8 +78,18 @@ export default async function PublicProfilePage({ params }: Props) {
 
   if (profile) {
     const [{ data: projects }, { data: services }] = await Promise.all([
-      supabase.from("projects").select("*").eq("profile_id", profile.id).is("page_id", null).order("order_index"),
-      supabase.from("services").select("*").eq("profile_id", profile.id).is("page_id", null).order("order_index"),
+      supabase
+        .from("projects")
+        .select("*")
+        .eq("profile_id", profile.id)
+        .is("page_id", null)
+        .order("order_index"),
+      supabase
+        .from("services")
+        .select("*")
+        .eq("profile_id", profile.id)
+        .is("page_id", null)
+        .order("order_index"),
     ]);
 
     const data: PublicProfileData = {
@@ -76,25 +99,31 @@ export default async function PublicProfilePage({ params }: Props) {
       services: services ?? [],
     };
 
-    console.log("template_id from DB:", profile.template_id);
-
-    const TemplateComponent = getTemplate(profile.template_id);
+    const TemplateComponent = getTemplate(Number(profile.template_id));
     return <TemplateComponent data={data} />;
   }
 
   const { data: page } = await supabase
     .from("pages")
-    .select("*, profiles(id, full_name, avatar_url, plan)")
+    .select("*, profiles(id, full_name, avatar_url, plan, accent_color, font_id)")
     .eq("username", username)
     .eq("is_published", true)
     .single();
 
   if (page) {
-    const ownerProfile = page.profiles as { id: string; full_name: string | null; avatar_url: string | null; plan: string } | null;
+    const ownerProfile = page.profiles as OwnerProfile | null;
 
     const [{ data: projects }, { data: services }] = await Promise.all([
-      supabase.from("projects").select("*").eq("page_id", page.id).order("order_index"),
-      supabase.from("services").select("*").eq("page_id", page.id).order("order_index"),
+      supabase
+        .from("projects")
+        .select("*")
+        .eq("page_id", page.id)
+        .order("order_index"),
+      supabase
+        .from("services")
+        .select("*")
+        .eq("page_id", page.id)
+        .order("order_index"),
     ]);
 
     const data: PublicProfileData = {
@@ -113,6 +142,8 @@ export default async function PublicProfilePage({ params }: Props) {
             template_id: page.template_id,
             is_published: page.is_published,
             plan: ownerProfile.plan as "free" | "pro",
+            accent_color: ownerProfile.accent_color,
+            font_id: ownerProfile.font_id,
             paystack_subscription_code: null,
             paystack_email_token: null,
             created_at: page.created_at,
@@ -124,20 +155,22 @@ export default async function PublicProfilePage({ params }: Props) {
       services: services ?? [],
     };
 
-    console.log("page template_id from DB:", page.template_id);
-
-    const TemplateComponent = getTemplate(page.template_id);
+    const TemplateComponent = getTemplate(Number(page.template_id));
     return <TemplateComponent data={data} />;
   }
 
   notFound();
 }
 
-function getTemplate(templateId: number) {
-  const templates: Record<number, React.ComponentType<{ data: PublicProfileData }>> = {
+function getTemplate(templateId: number | string) {
+  const id = Number(templateId);
+  const templates: Record<
+    number,
+    React.ComponentType<{ data: PublicProfileData }>
+  > = {
     1: Template1,
     2: Template2,
     3: Template3,
   };
-  return templates[templateId] ?? Template1;
+  return templates[id] ?? Template1;
 }

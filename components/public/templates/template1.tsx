@@ -5,11 +5,11 @@ import {
   Mail,
   MessageCircle,
   ExternalLink,
-  Github,
   Link as LinkIcon,
 } from "lucide-react";
 import {
   FaTwitter,
+  FaGithub,
   FaLinkedin,
   FaInstagram,
   FaTiktok,
@@ -774,8 +774,6 @@ export function Template1({
           <main className="t1-panel t1-main">
             <section className="t1-hero">
               <div className="t1-console-line">
-                <span className="t1-console-prompt">$</span>
-                <span>init portfolio --profile "{profile.username}"</span>
                 <span className="t1-console-cursor" />
               </div>
 
@@ -917,7 +915,7 @@ export function Template1({
                                   onClick={() => track("github_click")}
                                   className="t1-inline-link"
                                 >
-                                  <Github size={13} />
+                                  <FaGithub size={13} />
                                   Source Code
                                 </a>
                               )}
@@ -1002,7 +1000,7 @@ export function Template1({
                     onClick={() => track("github_click")}
                     className="t1-social-link"
                   >
-                    <Github size={15} />
+                    <FaGithub size={15} />
                     GitHub
                   </a>
                 )}

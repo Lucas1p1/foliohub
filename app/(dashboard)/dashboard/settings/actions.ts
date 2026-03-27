@@ -13,6 +13,5 @@ export async function saveTemplateAction(userId: string, templateId: number) {
     console.error("Save template error:", error);
     throw new Error(error.message);
   }
-  revalidatePath("/[username]", "page");
-  revalidatePath("/dashboard/settings");
+  revalidatePath("/", "layout"); // revalidate everything
 }
