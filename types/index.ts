@@ -8,12 +8,12 @@ export type EventType =
   | "live_url_click";
 
 export interface SocialLinks {
-  twitter?: string;
-  linkedin?: string;
-  github?: string;
-  website?: string;
-  instagram?: string;
-  youtube?: string;
+  twitter?: string | null;
+  linkedin?: string | null;
+  instagram?: string | null;
+  tiktok?: string | null;
+  // Extra custom links stored as extra_0_label / extra_0_url etc.
+  [key: string]: string | null | undefined;
 }
 
 export interface Profile {
