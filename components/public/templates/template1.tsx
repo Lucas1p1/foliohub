@@ -761,7 +761,6 @@ export function Template1({
             <span className="t1-dot" />
             <span className="t1-dot accent" />
             <span className="t1-dot" />
-            <span className="t1-topbar-title">developer-mode / template-01</span>
           </div>
 
           <div className="t1-status">
@@ -799,7 +798,6 @@ export function Template1({
 
                   <div className="t1-meta">
                     <div className="t1-chip">
-                      <strong>mode</strong> developer
                     </div>
 
                     {profile.location && (
@@ -861,7 +859,7 @@ export function Template1({
 
                 {featuredProjects.length > 0 && (
                   <div style={{ marginTop: profile.bio ? 28 : 0 }}>
-                    <div className="t1-label">builds / selected work</div>
+                    <div className="t1-label"> selected work</div>
 
                     <div className="t1-projects">
                       {featuredProjects.map((project, index) => (
@@ -883,7 +881,7 @@ export function Template1({
                             <div>
                               <div className="t1-project-title-row">
                                 <h3 className="t1-project-title">{project.title}</h3>
-                                <span className="t1-project-status">deployed</span>
+                                <span className="t1-project-status"></span>
                               </div>
 
                               {project.description && (
@@ -931,7 +929,7 @@ export function Template1({
               <section className="t1-section right">
                 {availableServices.length > 0 && (
                   <>
-                    <div className="t1-label">services / commands</div>
+                    <div className="t1-label">services </div>
 
                     <div className="t1-service-list">
                       {availableServices.map((service) => (
