@@ -14,10 +14,84 @@ const EMPTY: Omit<Project, "id" | "profile_id" | "page_id" | "created_at" | "upd
   title: "", description: "", image_url: null, live_url: "", github_url: "", order_index: 0,
 };
 
+interface FormFieldsProps {
+  form: typeof EMPTY;
+  setForm: React.Dispatch<React.SetStateAction<typeof EMPTY>>;
+  onSubmit: () => void;
+  onCancel: () => void;
+  submitLabel: string;
+  saving: boolean;
+  uploading: boolean;
+  onUpload: (file: File) => void;
+}
+
+// ── Defined OUTSIDE the parent so it never remounts on re-render ──
+function ProjectFormFields({
+  form, setForm, onSubmit, onCancel, submitLabel, saving, uploading, onUpload,
+}: FormFieldsProps) {
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((p) => ({ ...p, [f]: e.target.value }));
+
+  return (
+    <div className="space-y-4 mt-4 pt-4 border-t border-border">
+      <div className="space-y-1.5">
+        <Label>Project title *</Label>
+        <Input value={form.title} onChange={set("title")} placeholder="My awesome project" required />
+      </div>
+      <div className="space-y-1.5">
+        <Label>Description</Label>
+        <Textarea value={form.description ?? ""} onChange={set("description")} placeholder="What you built and what tech you used..." rows={3} />
+      </div>
+      <div className="space-y-1.5">
+        <Label>Project image</Label>
+        <div className="flex items-center gap-3">
+          {form.image_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={getProjectImageUrl(form.image_url) ?? ""} alt="" className="w-16 h-12 rounded-lg object-cover border" />
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) onUpload(file);
+            }}
+          />
+          <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()}>
+            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            {form.image_url ? "Change" : "Upload image"}
+          </Button>
+        </div>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label>Live URL</Label>
+          <Input value={form.live_url ?? ""} onChange={set("live_url")} placeholder="https://myproject.com" type="url" />
+        </div>
+        <div className="space-y-1.5">
+          <Label>GitHub URL</Label>
+          <Input value={form.github_url ?? ""} onChange={set("github_url")} placeholder="https://github.com/..." type="url" />
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <Button type="button" size="sm" onClick={onSubmit} disabled={saving || !form.title.trim()}>
+          {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+          {submitLabel}
+        </Button>
+        <Button type="button" size="sm" variant="ghost" onClick={onCancel}>Cancel</Button>
+      </div>
+    </div>
+  );
+}
+
 interface Props {
   projects: Project[];
   userId: string;
-  pageId?: string; // if set, projects belong to this page
+  pageId?: string;
 }
 
 export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
@@ -28,11 +102,9 @@ export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const supabase = createClient();
-
-  const maxProjects = pageId ? 12 : 12;
+  const maxProjects = 12;
 
   async function uploadImage(file: File): Promise<string | null> {
     setUploading(true);
@@ -42,6 +114,11 @@ export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
     setUploading(false);
     if (error) { toast({ title: "Upload failed", variant: "destructive" }); return null; }
     return path;
+  }
+
+  async function handleUpload(file: File) {
+    const path = await uploadImage(file);
+    if (path) setForm((p) => ({ ...p, image_url: path }));
   }
 
   async function addProject() {
@@ -82,7 +159,11 @@ export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      setProjects((p) => p.map((proj) => proj.id === id ? { ...proj, ...form, id, profile_id: userId, page_id: pageId ?? null, created_at: proj.created_at, updated_at: new Date().toISOString() } : proj));
+      setProjects((p) => p.map((proj) =>
+        proj.id === id
+          ? { ...proj, ...form, id, profile_id: userId, page_id: pageId ?? null, created_at: proj.created_at, updated_at: new Date().toISOString() }
+          : proj
+      ));
       setEditing(null);
       toast({ title: "Project updated ✓" });
     }
@@ -100,67 +181,15 @@ export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
   function startEdit(p: Project) {
     setEditing(p.id);
     setShowAdd(false);
-    setForm({ title: p.title, description: p.description ?? "", image_url: p.image_url, live_url: p.live_url ?? "", github_url: p.github_url ?? "", order_index: p.order_index });
+    setForm({
+      title: p.title,
+      description: p.description ?? "",
+      image_url: p.image_url,
+      live_url: p.live_url ?? "",
+      github_url: p.github_url ?? "",
+      order_index: p.order_index,
+    });
   }
-
-  const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((p) => ({ ...p, [f]: e.target.value }));
-
-  const ProjectFormFields = ({ onSubmit, onCancel, submitLabel }: { onSubmit: () => void; onCancel: () => void; submitLabel: string }) => (
-    <div className="space-y-4 mt-4 pt-4 border-t border-border">
-      <div className="space-y-1.5">
-        <Label>Project title *</Label>
-        <Input value={form.title} onChange={set("title")} placeholder="My awesome project" required />
-      </div>
-      <div className="space-y-1.5">
-        <Label>Description</Label>
-        <Textarea value={form.description ?? ""} onChange={set("description")} placeholder="What you built and what tech you used..." rows={3} />
-      </div>
-      <div className="space-y-1.5">
-        <Label>Project image</Label>
-        <div className="flex items-center gap-3">
-          {form.image_url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={getProjectImageUrl(form.image_url) ?? ""} alt="" className="w-16 h-12 rounded-lg object-cover border" />
-          )}
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                const path = await uploadImage(file);
-                if (path) setForm((p) => ({ ...p, image_url: path }));
-              }
-            }}
-          />
-          <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()}>
-            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-            {form.image_url ? "Change" : "Upload image"}
-          </Button>
-        </div>
-      </div>
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div className="space-y-1.5">
-          <Label>Live URL</Label>
-          <Input value={form.live_url ?? ""} onChange={set("live_url")} placeholder="https://myproject.com" type="url" />
-        </div>
-        <div className="space-y-1.5">
-          <Label>GitHub URL</Label>
-          <Input value={form.github_url ?? ""} onChange={set("github_url")} placeholder="https://github.com/..." type="url" />
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <Button type="button" size="sm" onClick={onSubmit} disabled={saving || !form.title.trim()}>
-          {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-          {submitLabel}
-        </Button>
-        <Button type="button" size="sm" variant="ghost" onClick={onCancel}>Cancel</Button>
-      </div>
-    </div>
-  );
 
   return (
     <div className="space-y-3">
@@ -174,9 +203,14 @@ export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
                   <Button variant="ghost" size="sm" onClick={() => setEditing(null)}>×</Button>
                 </div>
                 <ProjectFormFields
+                  form={form}
+                  setForm={setForm}
                   onSubmit={() => updateProject(p.id)}
                   onCancel={() => setEditing(null)}
                   submitLabel="Save changes"
+                  saving={saving}
+                  uploading={uploading}
+                  onUpload={handleUpload}
                 />
               </>
             ) : (
@@ -190,8 +224,16 @@ export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
                   <p className="font-medium text-sm truncate">{p.title}</p>
                   {p.description && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{p.description}</p>}
                   <div className="flex gap-3 mt-1">
-                    {p.live_url && <a href={p.live_url} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"><ExternalLink className="h-3 w-3" />Live</a>}
-                    {p.github_url && <a href={p.github_url} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"><ExternalLink className="h-3 w-3" />GitHub</a>}
+                    {p.live_url && (
+                      <a href={p.live_url} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
+                        <ExternalLink className="h-3 w-3" />Live
+                      </a>
+                    )}
+                    {p.github_url && (
+                      <a href={p.github_url} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
+                        <ExternalLink className="h-3 w-3" />GitHub
+                      </a>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-1 shrink-0">
@@ -211,9 +253,14 @@ export function ProjectsManager({ projects: initial, userId, pageId }: Props) {
           <CardContent className="p-4">
             <p className="font-medium text-sm">New project</p>
             <ProjectFormFields
+              form={form}
+              setForm={setForm}
               onSubmit={addProject}
               onCancel={() => { setShowAdd(false); setForm(EMPTY); }}
               submitLabel="Add project"
+              saving={saving}
+              uploading={uploading}
+              onUpload={handleUpload}
             />
           </CardContent>
         </Card>

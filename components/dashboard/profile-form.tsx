@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, ExternalLink } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/lib/use-toast";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getInitials, getAvatarUrl, isValidUsername } from "@/lib/utils";
 import type { Profile } from "@/types";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
+
 export function ProfileForm({ profile, userId }: { profile: Profile; userId: string }) {
   const { toast } = useToast();
+  const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url);
@@ -25,10 +29,10 @@ export function ProfileForm({ profile, userId }: { profile: Profile; userId: str
     location: profile.location ?? "",
     whatsapp: profile.whatsapp ?? "",
     email_contact: profile.email_contact ?? "",
-    twitter: (profile.social_links as Record<string,string>)?.twitter ?? "",
-    linkedin: (profile.social_links as Record<string,string>)?.linkedin ?? "",
-    github: (profile.social_links as Record<string,string>)?.github ?? "",
-    website: (profile.social_links as Record<string,string>)?.website ?? "",
+    twitter: (profile.social_links as Record<string, string>)?.twitter ?? "",
+    linkedin: (profile.social_links as Record<string, string>)?.linkedin ?? "",
+    github: (profile.social_links as Record<string, string>)?.github ?? "",
+    website: (profile.social_links as Record<string, string>)?.website ?? "",
   });
 
   async function uploadAvatar(file: File) {
@@ -45,6 +49,8 @@ export function ProfileForm({ profile, userId }: { profile: Profile; userId: str
       await supabase.from("profiles").update({ avatar_url: url }).eq("id", userId);
       setAvatarUrl(url);
       toast({ title: "Photo updated" });
+      // Refresh server components so sidebar avatar updates
+      router.refresh();
     }
     setUploading(false);
   }
@@ -77,6 +83,9 @@ export function ProfileForm({ profile, userId }: { profile: Profile; userId: str
       toast({ title: "Error saving", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Profile saved ✓" });
+      // Refresh server components so the sidebar "VIEW MY PAGE" link
+      // and any other server-rendered username references update immediately
+      router.refresh();
     }
     setSaving(false);
   }
@@ -123,15 +132,27 @@ export function ProfileForm({ profile, userId }: { profile: Profile; userId: str
             <div className="space-y-1.5">
               <Label htmlFor="username">Username (your URL)</Label>
               <div className="flex rounded-lg overflow-hidden border border-input focus-within:ring-2 focus-within:ring-ring">
-                <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input">Introhub.co/</span>
+                <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input shrink-0">
+                  {APP_URL}/
+                </span>
                 <input
                   id="username"
                   value={form.username}
-                  onChange={set("username")}
-                  className="flex-1 px-3 py-2 text-sm bg-background focus:outline-none"
+                  onChange={(e) => setForm((p) => ({ ...p, username: e.target.value.toLowerCase() }))}
+                  className="flex-1 px-3 py-2 text-sm bg-background focus:outline-none min-w-0"
                   placeholder="yourname"
                 />
               </div>
+              {/* Live preview of the URL */}
+              <a
+                href={`${APP_URL}/${form.username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mt-1"
+              >
+                <ExternalLink className="h-3 w-3" />
+                {APP_URL}/{form.username}
+              </a>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="full_name">Full name</Label>
@@ -184,7 +205,7 @@ export function ProfileForm({ profile, userId }: { profile: Profile; userId: str
           ].map((s) => (
             <div key={s.field} className="space-y-1.5">
               <Label htmlFor={s.field}>{s.label}</Label>
-              <Input id={s.field} value={(form as Record<string,string>)[s.field]} onChange={set(s.field)} placeholder={s.placeholder} type="url" />
+              <Input id={s.field} value={(form as Record<string, string>)[s.field]} onChange={set(s.field)} placeholder={s.placeholder} type="url" />
             </div>
           ))}
         </CardContent>
