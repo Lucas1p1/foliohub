@@ -123,7 +123,7 @@ export function ProfileForm({ profile, userId }: { profile: Profile; userId: str
             <div className="space-y-1.5">
               <Label htmlFor="username">Username (your URL)</Label>
               <div className="flex rounded-lg overflow-hidden border border-input focus-within:ring-2 focus-within:ring-ring">
-                <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input">foliohub.co/</span>
+                <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input">Introhub.co/</span>
                 <input
                   id="username"
                   value={form.username}

@@ -11,7 +11,7 @@ import { cn, getInitials, getAvatarUrl } from "@/lib/utils";
 import { signOut } from "@/app/(auth)/actions";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
 interface SidebarProfile {
   username: string;

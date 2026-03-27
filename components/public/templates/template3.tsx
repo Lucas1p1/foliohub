@@ -6,7 +6,7 @@ import { useTrack } from "@/lib/use-track";
 import { getAvatarUrl, getInitials, getProjectImageUrl, getWhatsAppUrl } from "@/lib/utils";
 import type { PublicProfileData } from "@/types";
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
 export function Template3({ data: { profile, projects, services } }: { data: PublicProfileData }) {
   if (!profile) return null;

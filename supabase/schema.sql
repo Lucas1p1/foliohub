@@ -1,5 +1,5 @@
 -- ============================================================
--- FolioHub Database Schema
+-- Introhub Database Schema
 -- Run this in your Supabase SQL editor
 -- ============================================================
 

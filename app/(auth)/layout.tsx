@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

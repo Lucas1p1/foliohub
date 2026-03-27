@@ -13,7 +13,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
   const supabase = await createClient();
-  const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
+  const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
   // Check main profile first
   const { data: profile } = await supabase

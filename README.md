@@ -1,4 +1,4 @@
-# FolioHub
+# IntroHub
 
 A personal landing page builder that helps people get jobs, clients, and leads.
 
@@ -18,7 +18,7 @@ A personal landing page builder that helps people get jobs, clients, and leads.
 
 ```bash
 git clone <your-repo>
-cd foliohub
+cd Introhub
 npm install
 ```
 
@@ -31,7 +31,7 @@ npm install
 ### 3. Set up Stripe
 
 1. Create a product in Stripe Dashboard: **Products → Add product**
-   - Name: "FolioHub Pro"
+   - Name: "Introhub Pro"
    - Price: ₦5000/month, recurring
 2. Copy the **Price ID** (starts with `price_...`)
 3. Set up webhook endpoint: `https://yourdomain.com/api/stripe/webhook`
@@ -58,7 +58,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
 
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_APP_NAME=FolioHub
+NEXT_PUBLIC_APP_NAME=Introhub
 
 RESEND_API_KEY=re_...
 RESEND_FROM_EMAIL=hello@yourdomain.com
@@ -119,16 +119,16 @@ supabase/
 ## Features
 
 ### Free plan
-- Public profile page at `username.foliohub.co`
+- Public profile page at `username.Introhub.co`
 - Up to 6 projects
 - WhatsApp & email contact buttons
 - Template 1 (Developer layout)
-- FolioHub branding in footer
+- Introhub branding in footer
 
 ### Pro plan (₦5000/month)
 - All 3 templates
 - Analytics dashboard (views, clicks, conversion rate)
-- No FolioHub branding
+- No Introhub branding
 - Manage billing via Stripe portal
 
 ## Templates

@@ -135,7 +135,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                   {[
                     "Analytics — views, clicks, conversion rate",
                     "All 3 templates unlocked",
-                    "No FolioHub branding",
+                    "No Introhub branding",
                     "Cancel anytime",
                   ].map(f => (
                     <li key={f} className="flex items-center gap-2">

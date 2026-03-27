@@ -207,7 +207,7 @@ export function PagesManager({ pages: initial, userId, userPlan, publishedCount:
               <div className="space-y-1.5">
                 <Label>Page URL</Label>
                 <div className="flex rounded-lg overflow-hidden border border-input focus-within:ring-2 focus-within:ring-ring">
-                  <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input whitespace-nowrap">foliohub.co/</span>
+                  <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input whitespace-nowrap">Introhub.co/</span>
                   <input
                     value={newForm.username}
                     onChange={(e) => setNewForm((p) => ({ ...p, username: e.target.value.toLowerCase() }))}
@@ -284,7 +284,7 @@ export function PagesManager({ pages: initial, userId, userPlan, publishedCount:
                 <div className="space-y-1.5">
                   <Label>Page URL</Label>
                   <div className="flex rounded-lg overflow-hidden border border-input focus-within:ring-2 focus-within:ring-ring">
-                    <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input whitespace-nowrap">foliohub.co/</span>
+                    <span className="px-3 flex items-center bg-muted text-muted-foreground text-sm border-r border-input whitespace-nowrap">Introhub.co/</span>
                     <input
                       value={(editForms[activePage.id]?.username as string) ?? ""}
                       onChange={(e) => setField(activePage.id, "username", e.target.value.toLowerCase())}

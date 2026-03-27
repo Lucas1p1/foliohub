@@ -6,9 +6,9 @@ function getResend() {
   return _resend;
 }
 
-const FROM = process.env.RESEND_FROM_EMAIL ?? "hello@foliohub.co";
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://foliohub.co";
+const FROM = process.env.RESEND_FROM_EMAIL ?? "hello@Introhub.co";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://Introhub.co";
 
 export async function sendWelcomeEmail(email: string, username: string) {
   await getResend().emails.send({

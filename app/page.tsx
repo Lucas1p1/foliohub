@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { ArrowUpRight, BarChart2, Globe, MessageCircle, Layers, Zap } from "lucide-react";
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
 // Injected once at the top of the page — avoids any client-side event handlers
 const hoverStyles = `
@@ -182,7 +182,7 @@ export default function LandingPage() {
             <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 52, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 4 }}>₦0</div>
             <div style={{ fontSize: 12, color: "#333", marginBottom: 36, fontWeight: 300 }}>Forever free</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 11, marginBottom: 36 }}>
-              {["Public profile page", "Up to 6 projects", "WhatsApp button", "1 template", "FolioHub footer"].map(f => (
+              {["Public profile page", "Up to 6 projects", "WhatsApp button", "1 template", "Introhub footer"].map(f => (
                 <div key={f} style={{ display: "flex", gap: 10, fontSize: 13, color: "#555", fontWeight: 300 }}>
                   <span style={{ color: "#2e2e2e" }}>—</span> {f}
                 </div>
@@ -206,7 +206,7 @@ export default function LandingPage() {
             <div style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 52, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1, marginBottom: 4 }}>₦5000</div>
             <div style={{ fontSize: 12, color: "#444", marginBottom: 36, fontWeight: 300 }}>per month · cancel anytime</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 11, marginBottom: 36 }}>
-              {["Everything in Free", "All 3 templates", "Analytics dashboard", "No FolioHub branding", "Multiple pages"].map(f => (
+              {["Everything in Free", "All 3 templates", "Analytics dashboard", "No Introhub branding", "Multiple pages"].map(f => (
                 <div key={f} style={{ display: "flex", gap: 10, fontSize: 13, color: "#e8e8e8", fontWeight: 300 }}>
                   <span style={{ color: "#888" }}>—</span> {f}
                 </div>

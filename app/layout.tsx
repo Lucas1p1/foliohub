@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "FolioHub";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://foliohub.co";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://introhub.vercel.app";
 
 export const metadata: Metadata = {
   title: { default: APP_NAME, template: `%s | ${APP_NAME}` },
