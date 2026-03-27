@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { CheckCircle, Loader2, Sparkles, AlertCircle, Palette, Type } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/lib/use-toast";
@@ -79,6 +80,7 @@ interface Props {
 
 export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Props) {
   const { toast } = useToast();
+  const router = useRouter();
   const [templateId, setTemplateId] = useState(profile.template_id);
   const [savingTemplate, setSavingTemplate] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
@@ -113,6 +115,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
     await supabase.from("profiles").update({ template_id: id }).eq("id", userId);
     setSavingTemplate(false);
     toast({ title: "Template saved" });
+    router.refresh();
   }
 
   async function saveAppearance() {
@@ -120,9 +123,10 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
     await supabase.from("profiles").update({
       accent_color: accentColor,
       font_id: fontId,
-    }).eq("id", userId);
+    } as unknown as Record<string, unknown>).eq("id", userId);
     setSavingAppearance(false);
     toast({ title: "Appearance saved ✓" });
+    router.refresh();
   }
 
   async function handleUpgrade() {
@@ -232,7 +236,6 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                   >
                     {/* Simulated layout based on template */}
                     {t.id === 1 && (
-                      // Terminal: dark, grid layout
                       <div style={{ padding: 10, height: "100%", display: "flex", flexDirection: "column", gap: 6 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                           <div style={{ width: 24, height: 24, borderRadius: 4, background: t.preview.accent + "22", border: `1px solid ${t.preview.accent}44` }} />
@@ -252,7 +255,6 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                       </div>
                     )}
                     {t.id === 2 && (
-                      // Magazine: white, bold type, colored blocks
                       <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
                         <div style={{ padding: "8px 10px", borderBottom: "1px solid #e8e8e8", display: "flex", alignItems: "center", gap: 6, background: "#fff" }}>
                           <div style={{ width: 16, height: 16, borderRadius: "50%", background: t.preview.accent }} />
@@ -269,7 +271,6 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                       </div>
                     )}
                     {t.id === 3 && (
-                      // Studio: soft gradient, centered, cards
                       <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, background: `linear-gradient(135deg, #fdfcfb, ${t.preview.accent}15)`, padding: 10 }}>
                         <div style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${t.preview.accent}`, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <div style={{ width: 10, height: 10, borderRadius: "50%", background: t.preview.accent }} />
@@ -345,7 +346,6 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
           <div>
             <p className="text-xs text-muted-foreground mb-3 font-medium uppercase tracking-wider" style={{ fontFamily: "'Syne', sans-serif", letterSpacing: "0.1em" }}>Custom</p>
             <div className="flex items-center gap-3">
-              {/* Gradient wheel-style input */}
               <div style={{ position: "relative", flexShrink: 0 }}>
                 <div style={{
                   width: 48, height: 48, borderRadius: "50%",
@@ -363,7 +363,6 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                 />
               </div>
 
-              {/* Hex input */}
               <div className="flex items-center gap-2 flex-1">
                 <div style={{ width: 20, height: 20, borderRadius: 4, background: accentColor, border: "1px solid rgba(255,255,255,0.1)", flexShrink: 0 }} />
                 <input
@@ -389,7 +388,6 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
                 <span className="text-xs text-muted-foreground">HEX</span>
               </div>
 
-              {/* Live preview strip */}
               <div style={{ flex: 1, height: 32, borderRadius: 6, background: `linear-gradient(135deg, ${accentColor}22, ${accentColor}44)`, border: `1px solid ${accentColor}33`, display: "flex", alignItems: "center", paddingLeft: 12, gap: 8 }}>
                 <div style={{ width: 8, height: 8, borderRadius: "50%", background: accentColor }} />
                 <span style={{ fontSize: 11, color: accentColor, fontFamily: "'DM Mono', monospace" }}>preview</span>
