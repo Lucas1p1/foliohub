@@ -1,256 +1,253 @@
 "use client";
 
-import { MapPin, ArrowUpRight, Mail, Link as LinkIcon } from "lucide-react";
-import { FaTwitter, FaLinkedin, FaInstagram, FaTiktok } from "react-icons/fa";
+import { MapPin, ArrowUpRight, Mail, MessageCircle } from "lucide-react";
+import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa";
 import { useTrack } from "@/lib/use-track";
 import { getAvatarUrl, getInitials, getProjectImageUrl, getWhatsAppUrl } from "@/lib/utils";
 import type { PublicProfileData } from "@/types";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
-function getExtraLinks(social: Record<string, string | null | undefined>) {
-  const links: { label: string; url: string }[] = [];
-  let i = 0;
-  while (social[`extra_${i}_label`] !== undefined || social[`extra_${i}_url`] !== undefined) {
-    const label = social[`extra_${i}_label`] ?? "";
-    const url = social[`extra_${i}_url`] ?? "";
-    if (url) links.push({ label: label || url, url });
-    i++;
-  }
-  return links;
-}
+const t3Styles = `
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
+`;
 
-export function Template1({ data: { profile, projects, services } }: { data: PublicProfileData }) {
+export function Template3({ data: { profile, projects, services } }: { data: PublicProfileData }) {
   if (!profile) return null;
   const { track } = useTrack(profile.id);
-  const social = profile.social_links as Record<string, string | null | undefined>;
-  const extraLinks = getExtraLinks(social);
+  const social = profile.social_links as Record<string, string>;
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-      {/* Subtle grain overlay */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]"
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`, backgroundRepeat: "repeat", backgroundSize: "128px" }} />
+    <div className="min-h-screen" style={{ background: "linear-gradient(160deg, #faf8f5 0%, #f0ece4 100%)", fontFamily: "'Georgia', 'Times New Roman', serif", overflowX: "hidden" }}>
+      <style dangerouslySetInnerHTML={{ __html: t3Styles }} />
 
-      {/* Thin gold top border */}
-      <div className="fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c9a96e] to-transparent z-50" />
+      <div className="min-h-screen flex flex-col lg:flex-row">
 
-      {/* Nav */}
-      <nav className="relative z-10 max-w-5xl mx-auto px-8 py-8 flex items-center justify-between">
-        <div className="text-xs tracking-[0.3em] text-[#c9a96e] uppercase font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>
-          {profile.username}
-        </div>
-        <div className="flex items-center gap-5">
-          {social?.linkedin && (
-            <a href={social.linkedin} target="_blank" rel="noopener noreferrer"
-              className="text-white/30 hover:text-[#c9a96e] transition-colors duration-300">
-              <FaLinkedin className="h-4 w-4" />
-            </a>
-          )}
-          {social?.twitter && (
-            <a href={social.twitter} target="_blank" rel="noopener noreferrer"
-              className="text-white/30 hover:text-[#c9a96e] transition-colors duration-300">
-              <FaTwitter className="h-4 w-4" />
-            </a>
-          )}
-          {social?.instagram && (
-            <a href={social.instagram} target="_blank" rel="noopener noreferrer"
-              className="text-white/30 hover:text-[#c9a96e] transition-colors duration-300">
-              <FaInstagram className="h-4 w-4" />
-            </a>
-          )}
-          {social?.tiktok && (
-            <a href={social.tiktok} target="_blank" rel="noopener noreferrer"
-              className="text-white/30 hover:text-[#c9a96e] transition-colors duration-300">
-              <FaTiktok className="h-4 w-4" />
-            </a>
-          )}
-          {extraLinks.map((el) => (
-            <a key={el.url} href={el.url} target="_blank" rel="noopener noreferrer"
-              className="text-white/30 hover:text-[#c9a96e] transition-colors duration-300 text-xs tracking-wider uppercase font-sans"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              {el.label}
-            </a>
-          ))}
-          {profile.whatsapp && (
-            <a href={getWhatsAppUrl(profile.whatsapp, profile.full_name ?? undefined)} target="_blank" rel="noopener noreferrer"
-              onClick={() => track("whatsapp_click")}
-              className="text-xs tracking-[0.2em] uppercase border border-[#c9a96e]/40 text-[#c9a96e] px-5 py-2 hover:bg-[#c9a96e] hover:text-black transition-all duration-300 font-sans"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              Enquire
-            </a>
-          )}
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="relative z-10 max-w-5xl mx-auto px-8 pt-16 pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-end">
+        {/* ── Sidebar → becomes top header on mobile ── */}
+        <aside className="
+          w-full lg:w-80
+          lg:min-h-screen lg:sticky lg:top-0 lg:self-start
+          bg-[#2c2c2c] text-[#f5f0e8]
+          flex flex-col lg:justify-between
+          p-8 lg:p-12
+        ">
+          {/* Identity block */}
           <div>
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-px w-12 bg-[#c9a96e]" />
-              <span className="text-[10px] tracking-[0.4em] text-[#c9a96e] uppercase font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>Portfolio</span>
-            </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-normal leading-[1.05] tracking-tight mb-8" style={{ fontFamily: "'Georgia', serif" }}>
-              {profile.full_name ?? profile.username}
-            </h1>
-            {profile.headline && (
-              <p className="text-lg text-white/50 italic mb-8 leading-relaxed" style={{ fontFamily: "'Georgia', serif" }}>{profile.headline}</p>
-            )}
-            {profile.location && (
-              <div className="flex items-center gap-2 text-white/30 text-sm font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>
-                <MapPin className="h-3.5 w-3.5" />
-                <span className="tracking-widest text-xs uppercase">{profile.location}</span>
-              </div>
-            )}
-          </div>
-          <div className="flex flex-col items-start lg:items-end gap-8">
-            <div className="relative">
-              <div className="w-48 h-60 overflow-hidden" style={{ clipPath: "polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%)" }}>
-                {profile.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={getAvatarUrl(profile.avatar_url) ?? ""} alt={profile.full_name ?? ""} className="w-full h-full object-cover grayscale" />
-                ) : (
-                  <div className="w-full h-full bg-[#1a1a1a] flex items-center justify-center text-4xl text-[#c9a96e]" style={{ fontFamily: "'Georgia', serif" }}>
-                    {getInitials(profile.full_name)}
-                  </div>
+            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-5 lg:gap-0 mb-0 lg:mb-10">
+              {/* Avatar */}
+              {profile.avatar_url ? (
+                <div className="w-14 h-14 lg:w-16 lg:h-16 overflow-hidden shrink-0 lg:mb-6" style={{ borderRadius: "2px" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={getAvatarUrl(profile.avatar_url) ?? ""} alt={profile.full_name ?? ""} className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <div className="w-14 h-14 lg:w-16 lg:h-16 flex items-center justify-center shrink-0 border border-white/20 text-xl lg:text-2xl text-white/60 lg:mb-6" style={{ fontFamily: "'Georgia', serif", borderRadius: "2px" }}>
+                  {getInitials(profile.full_name)}
+                </div>
+              )}
+
+              {/* Name + headline */}
+              <div className="min-w-0">
+                <h1 className="text-xl lg:text-2xl font-normal leading-tight text-white" style={{ fontFamily: "'Georgia', serif" }}>
+                  {profile.full_name ?? profile.username}
+                </h1>
+                {profile.headline && (
+                  <p className="text-xs lg:text-sm text-white/40 mt-1 italic leading-relaxed" style={{ fontFamily: "'Georgia', serif" }}>{profile.headline}</p>
                 )}
               </div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-[#c9a96e]" />
             </div>
+
+            {/* Bio — hidden on mobile to keep header compact */}
             {profile.bio && (
-              <p className="text-sm text-white/40 leading-relaxed max-w-xs text-right font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{profile.bio}</p>
+              <p className="hidden lg:block text-sm text-white/40 leading-relaxed mb-10 font-sans" style={{ fontFamily: "system-ui, sans-serif", fontSize: "13px" }}>
+                {profile.bio}
+              </p>
             )}
-          </div>
-        </div>
-        <div className="mt-20 flex items-center gap-6">
-          <div className="h-px flex-1 bg-white/5" />
-          <div className="w-1 h-1 rounded-full bg-[#c9a96e]" />
-          <div className="h-px w-16 bg-white/5" />
-        </div>
-      </section>
 
-      {/* Services */}
-      {services.length > 0 && (
-        <section className="relative z-10 max-w-5xl mx-auto px-8 py-20">
-          <div className="flex items-center gap-6 mb-14">
-            <span className="text-[10px] tracking-[0.4em] text-[#c9a96e] uppercase font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>Services</span>
-            <div className="h-px flex-1 bg-white/5" />
+            {/* Meta details */}
+            <div className="hidden lg:flex flex-col space-y-3 mt-6">
+              {profile.location && (
+                <div className="flex items-center gap-3 text-white/30">
+                  <MapPin className="h-3 w-3 shrink-0" />
+                  <span className="text-xs tracking-wider font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{profile.location}</span>
+                </div>
+              )}
+              {profile.email_contact && (
+                <a href={`mailto:${profile.email_contact}`} onClick={() => track("email_click")}
+                  className="flex items-center gap-3 text-white/30 hover:text-white/60 transition-colors">
+                  <Mail className="h-3 w-3 shrink-0" />
+                  <span className="text-xs font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{profile.email_contact}</span>
+                </a>
+              )}
+            </div>
+
+            {/* Social icons — always visible */}
+            <div className="flex gap-4 mt-5 lg:mt-8">
+              {social?.github && (
+                <a href={social.github} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}
+                  className="text-white/25 hover:text-white/60 transition-colors"><FaGithub className="h-4 w-4" /></a>
+              )}
+              {social?.linkedin && (
+                <a href={social.linkedin} target="_blank" rel="noopener noreferrer"
+                  className="text-white/25 hover:text-white/60 transition-colors"><FaLinkedin className="h-4 w-4" /></a>
+              )}
+              {social?.twitter && (
+                <a href={social.twitter} target="_blank" rel="noopener noreferrer"
+                  className="text-white/25 hover:text-white/60 transition-colors"><FaTwitter className="h-4 w-4" /></a>
+              )}
+              {social?.website && (
+                <a href={social.website} target="_blank" rel="noopener noreferrer" onClick={() => track("live_url_click")}
+                  className="text-white/25 hover:text-white/60 transition-colors"><ArrowUpRight className="h-4 w-4" /></a>
+              )}
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
-            {services.map((s, i) => (
-              <div key={s.id} className="bg-[#080808] p-8 group hover:bg-[#0f0f0f] transition-colors duration-500">
-                <div className="text-[10px] text-[#c9a96e]/50 tracking-[0.3em] mb-6 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>0{i + 1}</div>
-                <h3 className="text-lg font-normal mb-3" style={{ fontFamily: "'Georgia', serif" }}>{s.title}</h3>
-                {s.description && <p className="text-sm text-white/30 leading-relaxed mb-6 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{s.description}</p>}
-                {s.price && <div className="text-[#c9a96e] text-sm tracking-wider font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{s.price}</div>}
+
+          {/* CTA — inline on mobile, bottom on desktop */}
+          {profile.whatsapp && (
+            <div className="mt-6 lg:mt-0">
+              <div className="hidden lg:block h-px bg-white/10 mb-8" />
+              <a href={getWhatsAppUrl(profile.whatsapp, profile.full_name ?? undefined)}
+                target="_blank" rel="noopener noreferrer"
+                onClick={() => track("whatsapp_click")}
+                className="group flex items-center justify-between w-full border border-white/20 px-5 py-4 hover:bg-white hover:border-white transition-all duration-300"
+              >
+                <span className="text-xs tracking-[0.2em] uppercase text-white/60 group-hover:text-[#2c2c2c] transition-colors font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>
+                  Start a conversation
+                </span>
+                <MessageCircle className="h-3.5 w-3.5 text-white/40 group-hover:text-[#2c2c2c] transition-colors" />
+              </a>
+            </div>
+          )}
+        </aside>
+
+        {/* ── Main content ── */}
+        <main className="flex-1 px-5 sm:px-8 lg:px-16 py-10 lg:py-16 min-w-0">
+
+          {/* Services */}
+          {services.length > 0 && (
+            <section className="mb-16">
+              <div className="flex items-center gap-5 mb-8">
+                <h2 className="text-[10px] tracking-[0.4em] uppercase text-[#2c2c2c]/30 font-sans shrink-0" style={{ fontFamily: "system-ui, sans-serif" }}>Services</h2>
+                <div className="h-px flex-1 bg-[#2c2c2c]/10" />
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {services.map(s => (
+                  <div key={s.id} className="bg-white/60 border border-[#2c2c2c]/5 p-6 hover:bg-white/90 hover:border-[#2c2c2c]/10 transition-all duration-300" style={{ borderRadius: "2px" }}>
+                    <h3 className="text-base font-normal text-[#2c2c2c] mb-2" style={{ fontFamily: "'Georgia', serif" }}>{s.title}</h3>
+                    {s.description && <p className="text-xs text-[#2c2c2c]/50 leading-relaxed mb-4 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{s.description}</p>}
+                    {s.price && <div className="text-sm italic text-[#2c2c2c]/60" style={{ fontFamily: "'Georgia', serif" }}>{s.price}</div>}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
-      {/* Projects */}
-      {projects.length > 0 && (
-        <section className="relative z-10 max-w-5xl mx-auto px-8 py-20">
-          <div className="flex items-center gap-6 mb-14">
-            <span className="text-[10px] tracking-[0.4em] text-[#c9a96e] uppercase font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>Selected Work</span>
-            <div className="h-px flex-1 bg-white/5" />
-          </div>
-          <div className="space-y-px">
-            {projects.map((p, i) => (
-              <div key={p.id} className="group relative bg-[#080808] hover:bg-[#0d0d0d] transition-all duration-500 border-b border-white/5">
-                {p.image_url ? (
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
-                    <div className="lg:col-span-2 overflow-hidden h-48 lg:h-auto">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={getProjectImageUrl(p.image_url) ?? ""} alt={p.title}
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100" />
-                    </div>
-                    <div className="lg:col-span-3 p-10 flex flex-col justify-between">
-                      <div>
-                        <div className="text-[10px] text-white/20 tracking-[0.3em] mb-4 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{String(i + 1).padStart(2, "0")}</div>
-                        <h3 className="text-2xl font-normal mb-3" style={{ fontFamily: "'Georgia', serif" }}>{p.title}</h3>
-                        {p.description && <p className="text-sm text-white/30 leading-relaxed font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{p.description}</p>}
+          {/* Projects */}
+          {projects.length > 0 && (
+            <section className="mb-16">
+              <div className="flex items-center gap-5 mb-8">
+                <h2 className="text-[10px] tracking-[0.4em] uppercase text-[#2c2c2c]/30 font-sans shrink-0" style={{ fontFamily: "system-ui, sans-serif" }}>Work</h2>
+                <div className="h-px flex-1 bg-[#2c2c2c]/10" />
+              </div>
+              <div className="space-y-3">
+                {projects.map((p, i) => (
+                  <div key={p.id} className="group bg-white/50 border border-[#2c2c2c]/5 hover:bg-white/80 hover:border-[#2c2c2c]/10 transition-all duration-300 overflow-hidden" style={{ borderRadius: "2px" }}>
+                    {p.image_url ? (
+                      <div className="flex flex-col sm:flex-row">
+                        <div className="sm:w-48 h-40 sm:h-auto overflow-hidden shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={getProjectImageUrl(p.image_url) ?? ""} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        </div>
+                        <div className="flex-1 p-6 flex flex-col justify-between min-w-0">
+                          <div>
+                            <div className="text-[10px] text-[#2c2c2c]/25 tracking-[0.3em] mb-2 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{String(i + 1).padStart(2, "0")}</div>
+                            <h3 className="text-lg font-normal text-[#2c2c2c] mb-2" style={{ fontFamily: "'Georgia', serif" }}>{p.title}</h3>
+                            {p.description && <p className="text-xs text-[#2c2c2c]/45 leading-relaxed font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{p.description}</p>}
+                          </div>
+                          <div className="flex gap-5 mt-4">
+                            {p.live_url && (
+                              <a href={p.live_url} target="_blank" rel="noopener noreferrer" onClick={() => track("live_url_click")}
+                                className="flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase text-[#2c2c2c]/40 hover:text-[#2c2c2c] transition-colors font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>
+                                View <ArrowUpRight className="h-3 w-3" />
+                              </a>
+                            )}
+                            {p.github_url && (
+                              <a href={p.github_url} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")}
+                                className="flex items-center gap-1.5 text-xs tracking-[0.15em] uppercase text-[#2c2c2c]/30 hover:text-[#2c2c2c]/60 transition-colors font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>
+                                Code <FaGithub className="h-3 w-3" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex gap-6 mt-8">
-                        {p.live_url && (
-                          <a href={p.live_url} target="_blank" rel="noopener noreferrer" onClick={() => track("live_url_click")}
-                            className="flex items-center gap-2 text-xs text-[#c9a96e] tracking-[0.2em] uppercase hover:gap-4 transition-all duration-300 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>
-                            View Project <ArrowUpRight className="h-3 w-3" />
-                          </a>
-                        )}
+                    ) : (
+                      <div className="p-6 flex items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-start sm:items-center gap-5 min-w-0">
+                          <div className="text-[10px] text-[#2c2c2c]/25 tracking-[0.3em] font-sans shrink-0 mt-0.5 sm:mt-0" style={{ fontFamily: "system-ui, sans-serif" }}>{String(i + 1).padStart(2, "0")}</div>
+                          <div className="min-w-0">
+                            <h3 className="text-base font-normal text-[#2c2c2c] truncate" style={{ fontFamily: "'Georgia', serif" }}>{p.title}</h3>
+                            {p.description && <p className="text-xs text-[#2c2c2c]/40 mt-1 font-sans line-clamp-2" style={{ fontFamily: "system-ui, sans-serif" }}>{p.description}</p>}
+                          </div>
+                        </div>
+                        <div className="flex gap-3 shrink-0">
+                          {p.live_url && (
+                            <a href={p.live_url} target="_blank" rel="noopener noreferrer" onClick={() => track("live_url_click")} className="text-[#2c2c2c]/30 hover:text-[#2c2c2c] transition-colors">
+                              <ArrowUpRight className="h-4 w-4" />
+                            </a>
+                          )}
+                          {p.github_url && (
+                            <a href={p.github_url} target="_blank" rel="noopener noreferrer" onClick={() => track("github_click")} className="text-[#2c2c2c]/30 hover:text-[#2c2c2c] transition-colors">
+                              <FaGithub className="h-4 w-4" />
+                            </a>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="p-10 flex items-center justify-between">
-                    <div>
-                      <div className="text-[10px] text-white/20 tracking-[0.3em] mb-3 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{String(i + 1).padStart(2, "0")}</div>
-                      <h3 className="text-2xl font-normal mb-2" style={{ fontFamily: "'Georgia', serif" }}>{p.title}</h3>
-                      {p.description && <p className="text-sm text-white/30 max-w-lg font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{p.description}</p>}
-                    </div>
-                    <div className="flex gap-4 shrink-0 ml-8">
-                      {p.live_url && (
-                        <a href={p.live_url} target="_blank" rel="noopener noreferrer" onClick={() => track("live_url_click")} className="text-[#c9a96e]">
-                          <ArrowUpRight className="h-5 w-5" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Contact */}
+          <section>
+            <div className="flex items-center gap-5 mb-8">
+              <h2 className="text-[10px] tracking-[0.4em] uppercase text-[#2c2c2c]/30 font-sans shrink-0" style={{ fontFamily: "system-ui, sans-serif" }}>Contact</h2>
+              <div className="h-px flex-1 bg-[#2c2c2c]/10" />
+            </div>
+            <div className="bg-white/60 border border-[#2c2c2c]/5 p-8 sm:p-10" style={{ borderRadius: "2px" }}>
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-normal text-[#2c2c2c] mb-3 leading-snug" style={{ fontFamily: "'Georgia', serif" }}>
+                Open to new<br /><em>opportunities</em>
+              </h3>
+              <p className="text-sm text-[#2c2c2c]/50 mb-8 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>
+                Whether it's a project, a role, or just a conversation — reach out.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
+                {profile.whatsapp && (
+                  <a href={getWhatsAppUrl(profile.whatsapp, profile.full_name ?? undefined)} target="_blank" rel="noopener noreferrer"
+                    onClick={() => track("whatsapp_click")}
+                    className="flex items-center justify-center gap-2 bg-[#2c2c2c] text-white px-6 py-3.5 hover:bg-[#444] transition-colors font-sans text-sm tracking-[0.15em] uppercase" style={{ fontFamily: "system-ui, sans-serif", borderRadius: "2px" }}>
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
+                  </a>
+                )}
+                {profile.email_contact && (
+                  <a href={`mailto:${profile.email_contact}`} onClick={() => track("email_click")}
+                    className="flex items-center justify-center gap-2 border border-[#2c2c2c]/20 text-[#2c2c2c]/60 px-6 py-3.5 hover:border-[#2c2c2c]/40 hover:text-[#2c2c2c] transition-colors font-sans text-sm tracking-[0.15em] uppercase" style={{ fontFamily: "system-ui, sans-serif", borderRadius: "2px" }}>
+                    <Mail className="h-4 w-4" /> Email
+                  </a>
                 )}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Contact */}
-      <section className="relative z-10 max-w-5xl mx-auto px-8 py-24 border-t border-white/5">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-px w-12 bg-[#c9a96e]" />
-              <span className="text-[10px] tracking-[0.4em] text-[#c9a96e] uppercase font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>Contact</span>
             </div>
-            <h2 className="text-4xl sm:text-5xl font-normal leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
-              Let's create<br /><em>something remarkable</em>
-            </h2>
-          </div>
-          <div className="flex flex-col gap-4">
-            {profile.whatsapp && (
-              <a href={getWhatsAppUrl(profile.whatsapp, profile.full_name ?? undefined)} target="_blank" rel="noopener noreferrer"
-                onClick={() => track("whatsapp_click")}
-                className="group flex items-center justify-between border border-[#c9a96e]/30 px-8 py-5 hover:bg-[#c9a96e] hover:border-[#c9a96e] transition-all duration-300">
-                <span className="text-sm tracking-[0.2em] uppercase text-[#c9a96e] group-hover:text-black transition-colors font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>WhatsApp</span>
-                <ArrowUpRight className="h-4 w-4 text-[#c9a96e] group-hover:text-black transition-colors" />
-              </a>
-            )}
-            {profile.email_contact && (
-              <a href={`mailto:${profile.email_contact}`} onClick={() => track("email_click")}
-                className="group flex items-center justify-between border border-white/10 px-8 py-5 hover:border-white/30 transition-all duration-300">
-                <span className="text-sm tracking-[0.2em] uppercase text-white/50 group-hover:text-white transition-colors font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>Email</span>
-                <Mail className="h-4 w-4 text-white/30 group-hover:text-white transition-colors" />
-              </a>
-            )}
-            {extraLinks.map((el) => (
-              <a key={el.url} href={el.url} target="_blank" rel="noopener noreferrer"
-                className="group flex items-center justify-between border border-white/10 px-8 py-5 hover:border-white/30 transition-all duration-300">
-                <span className="text-sm tracking-[0.2em] uppercase text-white/50 group-hover:text-white transition-colors font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{el.label}</span>
-                <LinkIcon className="h-4 w-4 text-white/30 group-hover:text-white transition-colors" />
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 max-w-5xl mx-auto px-8 py-8 border-t border-white/5 flex items-center justify-between">
-        {profile.plan === "free" && (
-          <a href="/" className="text-[10px] tracking-[0.3em] text-white/15 hover:text-white/30 transition-colors uppercase font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{APP_NAME}</a>
-        )}
-        <div className="ml-auto text-[10px] tracking-[0.3em] text-white/15 font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{new Date().getFullYear()}</div>
-      </footer>
+          {profile.plan === "free" && (
+            <div className="mt-16 pt-8 border-t border-[#2c2c2c]/10 text-center">
+              <a href="/" className="text-[10px] tracking-[0.3em] text-[#2c2c2c]/20 hover:text-[#2c2c2c]/40 transition-colors uppercase font-sans" style={{ fontFamily: "system-ui, sans-serif" }}>{APP_NAME}</a>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

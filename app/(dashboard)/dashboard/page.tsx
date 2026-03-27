@@ -44,8 +44,8 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground text-sm mt-1">
           {profile.is_published
-            ? `Your page is live at ${APP_URL}/${profile.username}`
-            : "Your page is in draft mode — publish when ready"}
+            ? `Welcome`
+            : ""}
         </p>
       </div>
 
