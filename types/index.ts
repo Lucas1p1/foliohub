@@ -12,6 +12,7 @@ export interface SocialLinks {
   linkedin?: string | null;
   instagram?: string | null;
   tiktok?: string | null;
+  github?: string | null;
   // Extra custom links stored as extra_0_label / extra_0_url etc.
   [key: string]: string | null | undefined;
 }
@@ -30,6 +31,8 @@ export interface Profile {
   template_id: 1 | 2 | 3;
   is_published: boolean;
   plan: Plan;
+  accent_color: string | null;
+  font_id: string | null;
   paystack_subscription_code: string | null;
   paystack_email_token: string | null;
   created_at: string;
