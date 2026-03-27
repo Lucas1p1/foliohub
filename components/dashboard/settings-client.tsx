@@ -1,5 +1,5 @@
 "use client";
-
+import { saveTemplateAction } from "@/app/(dashboard)/dashboard/settings/actions";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Loader2, Sparkles, AlertCircle, Palette, Type } from "lucide-react";
@@ -106,28 +106,41 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
   }, [toast]);
 
   async function saveTemplate(id: number) {
-    if (profile.plan === "free" && id !== 1) {
-      toast({ title: "Pro required", description: "Upgrade to unlock all templates.", variant: "destructive" });
-      return;
-    }
-    setTemplateId(id as 1 | 2 | 3);
-    setSavingTemplate(true);
-    await supabase.from("profiles").update({ template_id: id }).eq("id", userId);
-    setSavingTemplate(false);
-    toast({ title: "Template saved" });
-    router.refresh();
+  if (profile.plan === "free" && id !== 1) {
+    toast({ title: "Pro required", description: "Upgrade to unlock all templates.", variant: "destructive" });
+    return;
   }
+  setTemplateId(id as 1 | 2 | 3);
+  setSavingTemplate(true);
+  try {
+    await saveTemplateAction(userId, id);
+    toast({ title: "Template saved" });
+  } catch {
+    toast({ title: "Error saving template", variant: "destructive" });
+    setTemplateId(profile.template_id); // revert on error
+  }
+  setSavingTemplate(false);
+}
 
-  async function saveAppearance() {
-    setSavingAppearance(true);
-    await supabase.from("profiles").update({
+ async function saveAppearance() {
+  setSavingAppearance(true);
+  const { error } = await supabase
+    .from("profiles")
+    .update({
       accent_color: accentColor,
       font_id: fontId,
-    } as unknown as Record<string, unknown>).eq("id", userId);
-    setSavingAppearance(false);
+    })
+    .eq("id", userId);
+  
+  if (error) {
+    console.error("Save appearance error:", error);
+    toast({ title: "Error saving", description: error.message, variant: "destructive" });
+  } else {
     toast({ title: "Appearance saved ✓" });
     router.refresh();
   }
+  setSavingAppearance(false);
+}
 
   async function handleUpgrade() {
     setBillingLoading(true);

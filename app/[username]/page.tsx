@@ -5,7 +5,7 @@ import { Template1 } from "@/components/public/templates/template1";
 import { Template2 } from "@/components/public/templates/template2";
 import { Template3 } from "@/components/public/templates/template3";
 import type { PublicProfileData } from "@/types";
-
+export const dynamic = "force-dynamic";
 interface Props {
   params: Promise<{ username: string }>;
 }
