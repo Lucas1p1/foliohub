@@ -85,7 +85,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
   const [cancelLoading, setCancelLoading] = useState(false);
 
   // Appearance state
-  const profileExtra = profile as Record<string, unknown>;
+  const profileExtra = profile as unknown as Record<string, unknown>;
   const [accentColor, setAccentColor] = useState<string>((profileExtra.accent_color as string) ?? "#e8ff47");
   const [customAccent, setCustomAccent] = useState<string>((profileExtra.accent_color as string) ?? "#e8ff47");
   const [fontId, setFontId] = useState<string>((profileExtra.font_id as string) ?? "mono");
@@ -120,7 +120,7 @@ export function SettingsClient({ profile, userId, userEmail, justUpgraded }: Pro
     await supabase.from("profiles").update({
       accent_color: accentColor,
       font_id: fontId,
-    } as Record<string, unknown>).eq("id", userId);
+    } as unknown as Record<string, unknown>).eq("id", userId);
     setSavingAppearance(false);
     toast({ title: "Appearance saved ✓" });
   }

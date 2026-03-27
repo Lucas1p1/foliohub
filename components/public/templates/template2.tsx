@@ -33,8 +33,8 @@ export function Template2({ data: { profile, projects, services } }: { data: Pub
   const { track } = useTrack(profile.id);
   const social = (profile.social_links ?? {}) as Record<string, string | null | undefined>;
   const extraLinks = getExtraLinks(social);
-  const accent = (profile as Record<string, unknown>).accent_color as string | undefined ?? DEFAULT_ACCENT;
-  const fontId = (profile as Record<string, unknown>).font_id as string | undefined ?? "sans";
+  const accent = (profile as unknown as Record<string, unknown>).accent_color as string | undefined ?? DEFAULT_ACCENT;
+  const fontId = (profile as unknown as Record<string, unknown>).font_id as string | undefined ?? "sans";
   const font = FONT_MAP[fontId] ?? FONT_MAP.sans;
 
   const styles = `

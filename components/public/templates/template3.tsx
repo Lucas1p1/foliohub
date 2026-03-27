@@ -33,8 +33,8 @@ export function Template3({ data: { profile, projects, services } }: { data: Pub
   const { track } = useTrack(profile.id);
   const social = (profile.social_links ?? {}) as Record<string, string | null | undefined>;
   const extraLinks = getExtraLinks(social);
-  const accent = (profile as Record<string, unknown>).accent_color as string | undefined ?? DEFAULT_ACCENT;
-  const fontId = (profile as Record<string, unknown>).font_id as string | undefined ?? "serif";
+  const accent = (profile as unknown as Record<string, unknown>).accent_color as string | undefined ?? DEFAULT_ACCENT;
+  const fontId = (profile as unknown as Record<string, unknown>).font_id as string | undefined ?? "serif";
   const font = FONT_MAP[fontId] ?? FONT_MAP.serif;
 
   // Compute a soft tinted bg from accent
