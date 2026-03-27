@@ -20,7 +20,7 @@ function getExtraLinks(social: Record<string, string | null | undefined>) {
   return links;
 }
 
-export function Template3({ data: { profile, projects, services } }: { data: PublicProfileData }) {
+export function Template2({ data: { profile, projects, services } }: { data: PublicProfileData }) {
   if (!profile) return null;
   const { track } = useTrack(profile.id);
   const social = profile.social_links as Record<string, string | null | undefined>;

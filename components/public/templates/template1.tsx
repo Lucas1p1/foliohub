@@ -13,7 +13,7 @@ const t3Styles = `
   html, body { overflow-x: hidden; }
 `;
 
-export function Template3({ data: { profile, projects, services } }: { data: PublicProfileData }) {
+export function Template1({ data: { profile, projects, services } }: { data: PublicProfileData }) {
   if (!profile) return null;
   const { track } = useTrack(profile.id);
   const social = profile.social_links as Record<string, string>;
