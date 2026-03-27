@@ -15,7 +15,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = await createClient();
   const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
-  // Check main profile first
   const { data: profile } = await supabase
     .from("profiles")
     .select("full_name, headline, avatar_url")
@@ -35,7 +34,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // Check pages table
   const { data: page } = await supabase
     .from("pages")
     .select("headline, profiles(full_name, avatar_url)")
@@ -58,7 +56,6 @@ export default async function PublicProfilePage({ params }: Props) {
   const { username } = await params;
   const supabase = await createClient();
 
-  // ── 1. Check main profile ──────────────────────────────────
   const { data: profile } = await supabase
     .from("profiles")
     .select("*")
@@ -79,11 +76,12 @@ export default async function PublicProfilePage({ params }: Props) {
       services: services ?? [],
     };
 
+    console.log("template_id from DB:", profile.template_id);
+
     const TemplateComponent = getTemplate(profile.template_id);
     return <TemplateComponent data={data} />;
   }
 
-  // ── 2. Check pages table ───────────────────────────────────
   const { data: page } = await supabase
     .from("pages")
     .select("*, profiles(id, full_name, avatar_url, plan)")
@@ -125,6 +123,8 @@ export default async function PublicProfilePage({ params }: Props) {
       projects: projects ?? [],
       services: services ?? [],
     };
+
+    console.log("page template_id from DB:", page.template_id);
 
     const TemplateComponent = getTemplate(page.template_id);
     return <TemplateComponent data={data} />;
