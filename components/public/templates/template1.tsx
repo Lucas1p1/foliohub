@@ -8,7 +8,7 @@ import type { PublicProfileData } from "@/types";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Introhub";
 
-const t3Styles = `
+const t1Styles = `
   *, *::before, *::after { box-sizing: border-box; }
   html, body { overflow-x: hidden; }
 `;
@@ -20,7 +20,7 @@ export function Template1({ data: { profile, projects, services } }: { data: Pub
 
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(160deg, #faf8f5 0%, #f0ece4 100%)", fontFamily: "'Georgia', 'Times New Roman', serif", overflowX: "hidden" }}>
-      <style dangerouslySetInnerHTML={{ __html: t3Styles }} />
+      <style dangerouslySetInnerHTML={{ __html: t1Styles }} />
 
       <div className="min-h-screen flex flex-col lg:flex-row">
 
